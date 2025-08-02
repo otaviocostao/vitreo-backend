@@ -1,0 +1,59 @@
+package com.api.vitreo.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Table(name = "cliente")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
+public class Cliente {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+
+    @Column(nullable = false, length = 100)
+    private String nome;
+
+    @Column(nullable = false, length = 100)
+    private String sobrenome;
+
+    @Column(length = 100)
+    private String email;
+
+    @Column(length = 20)
+    private String telefone;
+
+    @Embedded
+    private Endereco endereco;
+
+    @Column(length = 20)
+    private String cpf;
+
+    private LocalDate dataNascimento;
+
+    @Column(updatable = false)
+    private LocalDateTime dataCadastro;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Pedido> pedidos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Receituario> receituarios = new ArrayList<>();
+
+    @PrePersist
+    public void onPersist() {
+        this.dataCadastro = LocalDateTime.now();
+    }
+}
