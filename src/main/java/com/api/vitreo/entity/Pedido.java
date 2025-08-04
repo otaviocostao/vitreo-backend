@@ -55,6 +55,9 @@ public class Pedido {
     @Column(precision = 10, scale = 2)
     private Double valorTotal;
 
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Pagamento> pagamentos = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PedidoStatus status;
