@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Table(name = "receituarios")
@@ -19,6 +20,7 @@ public class Receituario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private UUID id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", nullable = false)
