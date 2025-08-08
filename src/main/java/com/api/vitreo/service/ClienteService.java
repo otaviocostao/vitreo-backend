@@ -1,31 +1,52 @@
 package com.api.vitreo.service;
 
+import com.api.vitreo.components.ClienteMapper;
+import com.api.vitreo.dto.ClienteRequestDTO;
+import com.api.vitreo.dto.ClienteResponseDTO;
 import com.api.vitreo.entity.Cliente;
 import com.api.vitreo.repository.ClienteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class ClienteService {
 
+    @Autowired
     private ClienteRepository clienteRepository;
+
+    @Autowired
+    private ClienteMapper clienteMapper;
 
     public ClienteService(ClienteRepository clienteRepository) {
         this.clienteRepository = clienteRepository;
     }
 
-    public Cliente save(Cliente cliente) {
-        return clienteRepository.save(cliente);
+    @Transactional
+    public ClienteResponseDTO save(ClienteRequestDTO clienteRequestDTO) {
+
+        Cliente cliente = clienteMapper.toEntity(clienteRequestDTO);
+
+        Cliente clienteSalvo = clienteRepository.save(cliente);
+
+        return clienteMapper.toResponseDTO(clienteSalvo);
     }
 
-    public Optional<Cliente> findById(UUID id) {
-        return clienteRepository.findById(id);
+    public ClienteResponseDTO findById(UUID id) {
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Cliente with id " + id + " does not exist."));
+
+        ClienteResponseDTO clienteDto = clienteMapper.toResponseDTO(cliente);
+
+        return clienteDto;
     }
 
     public List<Cliente> findAll() {
+
         return clienteRepository.findAll();
     }
 
@@ -41,11 +62,23 @@ public class ClienteService {
         clienteRepository.deleteById(id);
     }
 
-    public Cliente update(Cliente cliente) {
-        if (clienteRepository.existsById(cliente.getId())) {
-            return clienteRepository.save(cliente);
-        } else {
-            throw new IllegalArgumentException("Cliente with id " + cliente.getId() + " does not exist.");
+    public ClienteResponseDTO update(UUID id, ClienteRequestDTO clienteRequest) {
+
+        Cliente clienteExistente = clienteRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Cliente não encontrado com o ID: " + id));
+
+        clienteExistente.setNome(clienteRequest.nome());
+        clienteExistente.setSobrenome(clienteRequest.sobrenome());
+        clienteExistente.setCpf(clienteRequest.cpf());
+        clienteExistente.setTelefone(clienteRequest.telefone());
+        clienteExistente.setEmail(clienteRequest.email());
+        clienteExistente.setDataNascimento(clienteRequest.dataNascimento());
+        if (clienteRequest.endereco() != null) {
+            clienteMapper.updateEnderecoFromDto(clienteExistente.getEndereco(), clienteRequest.endereco());
         }
+
+        Cliente clienteSalvo = clienteRepository.save(clienteExistente);
+
+        return clienteMapper.toResponseDTO(clienteSalvo);
     }
 }

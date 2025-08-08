@@ -1,0 +1,56 @@
+package com.api.vitreo.controller;
+
+import com.api.vitreo.dto.ClienteRequestDTO;
+import com.api.vitreo.dto.ClienteResponseDTO;
+import com.api.vitreo.entity.Cliente;
+import com.api.vitreo.service.ClienteService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/clientes")
+public class ClienteController {
+
+    private ClienteService clienteService;
+
+    @PostMapping
+    public ResponseEntity<ClienteResponseDTO> save(@RequestBody ClienteRequestDTO clienteRequestDTO) {
+        ClienteResponseDTO novoCliente = clienteService.save(clienteRequestDTO);
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(novoCliente.id())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(novoCliente);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Cliente>> findAll(){
+        return ResponseEntity.ok(clienteService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteResponseDTO> findById(@RequestParam("id") UUID id){
+        ClienteResponseDTO cliente = clienteService.findById(id);
+        return ResponseEntity.ok(cliente);
+    }
+
+    @DeleteMapping
+    public void deleteById(@RequestParam("id") UUID id){
+        clienteService.deleteById(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ClienteResponseDTO> update(@RequestParam UUID id, @Valid @RequestBody ClienteRequestDTO clienteRequest) {
+        ClienteResponseDTO clienteAtualizado = clienteService.update(id, clienteRequest);
+        return ResponseEntity.ok(clienteAtualizado);
+    }
+}
