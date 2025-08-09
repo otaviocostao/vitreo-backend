@@ -1,24 +1,38 @@
 package com.api.vitreo.service;
 
+import com.api.vitreo.components.FornecedorMapper;
+import com.api.vitreo.dto.FornecedorRequestDTO;
+import com.api.vitreo.dto.FornecedorResponseDTO;
 import com.api.vitreo.entity.Fornecedor;
 import com.api.vitreo.repository.FornecedorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class FornecedorService {
 
+    @Autowired
     private FornecedorRepository fornecedorRepository;
 
-    public Fornecedor save(Fornecedor fornecedor) {
-        return fornecedorRepository.save(fornecedor);
+    @Autowired
+    private FornecedorMapper fornecedorMapper;
+
+    public FornecedorResponseDTO saveFornecedor(FornecedorRequestDTO fornecedorRequest) {
+        Fornecedor fornecedor = fornecedorMapper.toEntity(fornecedorRequest);
+
+        Fornecedor fornecedorSalvo = fornecedorRepository.save(fornecedor);
+
+        return fornecedorMapper.toResponseDTO(fornecedorSalvo);
     }
 
-    public Optional<Fornecedor> findById(UUID id) {
-        return fornecedorRepository.findById(id);
+    public FornecedorResponseDTO findById(UUID id, FornecedorRequestDTO requestDTO) {
+        Fornecedor fornecedorEntity = fornecedorRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Fornecedor not found with id: " + id));
+        return fornecedorMapper.toResponseDTO(fornecedorEntity);
     }
 
     public void deleteById(UUID id) {
@@ -29,10 +43,20 @@ public class FornecedorService {
         return fornecedorRepository.findAll();
     }
 
-    public Fornecedor update(Fornecedor fornecedor) {
-        if (fornecedor.getId() == null) {
-            throw new IllegalArgumentException("Fornecedor ID must not be null for update");
+    public FornecedorResponseDTO update(UUID id, FornecedorRequestDTO fornecedorRequest) {
+        Fornecedor fornecedorExistente = fornecedorRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Fornecedor not found with id: " + id));
+
+        fornecedorExistente.setRazaoSocial(fornecedorRequest.razaoSocial());
+        fornecedorExistente.setNomeFantasia(fornecedorRequest.nomeFantasia());
+        fornecedorExistente.setCnpj(fornecedorRequest.cnpj());
+        fornecedorExistente.setInscricaoEstadual(fornecedorRequest.inscricaoEstadual());
+        fornecedorExistente.setEmail(fornecedorRequest.email());
+        fornecedorExistente.setTelefone(fornecedorRequest.telefone());
+        if (fornecedorRequest.endereco() != null) {
+            fornecedorMapper.updateEnderecoFromDto(fornecedorExistente.getEndereco(), fornecedorRequest.endereco());
         }
-        return fornecedorRepository.save(fornecedor);
+        Fornecedor fornecedorSalvo = fornecedorRepository.save(fornecedorExistente);
+
+        return fornecedorMapper.toResponseDTO(fornecedorSalvo);
     }
 }
