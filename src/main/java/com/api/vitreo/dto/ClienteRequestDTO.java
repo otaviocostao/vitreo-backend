@@ -3,14 +3,10 @@ package com.api.vitreo.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
 public record ClienteRequestDTO(
 
     @NotBlank(message = "O nome não pode estar vazio")
