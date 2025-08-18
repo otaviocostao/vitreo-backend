@@ -29,6 +29,9 @@ public class Cliente {
     @Column(nullable = false, length = 100)
     private String sobrenome;
 
+    @Column(nullable = false)
+    private String nomeCompleto;
+
     @Column(length = 100)
     private String email;
 
@@ -54,6 +57,8 @@ public class Cliente {
 
     @PrePersist
     public void onPersist() {
+        this.nomeCompleto = this.nome + " " + this.sobrenome;
         this.dataCadastro = LocalDateTime.now();
     }
+
 }
