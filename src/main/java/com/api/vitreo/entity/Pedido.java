@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,17 +44,22 @@ public class Pedido {
 
     private LocalDate dataPrevisaoEntrega;
 
-
     private LocalDate dataEntrega;
 
     @Column(precision = 10, scale = 2)
-    private Double valorArmacao;
+    private BigDecimal valorArmacao;
 
     @Column(precision = 10, scale = 2)
-    private Double valorLentes;
+    private BigDecimal valorLentes;
 
     @Column(precision = 10, scale = 2)
-    private Double valorTotal;
+    private BigDecimal valorTotal = BigDecimal.ZERO;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal valorFinal = BigDecimal.ZERO;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal desconto = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Pagamento> pagamentos = new ArrayList<>();
