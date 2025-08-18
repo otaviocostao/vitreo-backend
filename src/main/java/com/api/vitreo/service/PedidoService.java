@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -101,6 +102,17 @@ public class PedidoService {
         return pedidosDto;
     }
 
+    @Transactional
+    public Page<PedidoResponseDTO> findAllByClienteId(UUID clienteId, Pageable pageable) {
+        if (!clienteRepository.existsById(clienteId)) {
+            throw new NoSuchElementException("Cliente não encontrado com o id: " + clienteId);
+        }
+
+        Page<Pedido> pedidosEntity = pedidoRepository.findAllByClienteId(clienteId, pageable);
+
+        return pedidosEntity.map(pedidoMapper::toResponseDTO);
+    }
+
 
     @Transactional
     public PedidoResponseDTO updateStatus(UUID id, PedidoStatus novoStatus) {
@@ -124,4 +136,17 @@ public class PedidoService {
     }
 
 
+    @Transactional
+    public Page<PedidoResponseDTO> findAllByStatus(PedidoStatus pedidoStatus, Pageable pageable) {
+        Page<Pedido> pedidosEntity = pedidoRepository.findAllByStatus(pedidoStatus, pageable);
+
+        return pedidosEntity.map(pedidoMapper::toResponseDTO);
+    }
+
+    @Transactional
+    public Optional<PedidoResponseDTO> findByOrdemServico(Integer ordemServico) {
+        Optional<Pedido> pedidoEntity = pedidoRepository.findByOrdemServico(ordemServico);
+
+        return pedidoEntity.map(pedidoMapper::toResponseDTO);
+    }
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -58,5 +59,39 @@ public class PedidoController {
 
         pedidoService.updateStatus(id, PedidoStatus.valueOf(novoStatus.toUpperCase()));
         return ResponseEntity.noContent().build();
+    }
+
+
+    @GetMapping("/cliente/{clienteId}")
+    public ResponseEntity<Page<PedidoResponseDTO>> findAllByClienteId(@PathVariable UUID id,
+                                                                      @PageableDefault(
+                                                                          size = 10,
+                                                                          page = 0,
+                                                                          sort = "dataPedido",
+                                                                          direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PedidoResponseDTO> pedidos = pedidoService.findAllByClienteId(id, pageable);
+        return ResponseEntity.ok(pedidos);
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<Page<PedidoResponseDTO>> findAllByStatus(
+            @PathVariable PedidoStatus status,
+            @PageableDefault(
+                    size = 10,
+                    page = 0,
+                    sort = "dataPedido",
+                    direction = Sort.Direction.DESC
+            )
+            Pageable pageable) {
+
+        Page<PedidoResponseDTO> pedidos = pedidoService.findAllByStatus(status, pageable);
+        return ResponseEntity.ok(pedidos);
+    }
+
+    @GetMapping("/ordem-servico/{ordemServico}")
+    public ResponseEntity<PedidoResponseDTO> findByOrdemServico(@PathVariable Integer ordemServico) {
+        return pedidoService.findByOrdemServico(ordemServico)
+                .map(pedidoDto -> ResponseEntity.ok(pedidoDto))
+                .orElse(ResponseEntity.notFound().build());
     }
 }
