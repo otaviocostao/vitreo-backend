@@ -1,38 +1,127 @@
 package com.api.vitreo.service;
 
+import com.api.vitreo.components.PedidoMapper;
+import com.api.vitreo.dto.ItemPedidoRequestDTO;
+import com.api.vitreo.dto.PedidoRequestDTO;
+import com.api.vitreo.dto.PedidoResponseDTO;
+import com.api.vitreo.entity.Cliente;
+import com.api.vitreo.entity.ItemPedido;
 import com.api.vitreo.entity.Pedido;
+import com.api.vitreo.entity.Produto;
+import com.api.vitreo.enums.PedidoStatus;
+import com.api.vitreo.repository.ClienteRepository;
 import com.api.vitreo.repository.PedidoRepository;
+import com.api.vitreo.repository.ProdutoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
 public class PedidoService {
 
+    @Autowired
     private PedidoRepository pedidoRepository;
 
-    public Pedido save(Pedido pedido) {
-        return pedidoRepository.save(pedido);
-    }
+    @Autowired
+    private ClienteRepository clienteRepository;
 
-    public Optional<Pedido> findById(UUID id) {
-        return pedidoRepository.findById(id);
-    }
+    @Autowired
+    private ProdutoRepository produtoRepository;
 
-    public List<Pedido> findAll() {
-        return pedidoRepository.findAll();
-    }
+    @Autowired
+    private PedidoMapper pedidoMapper;
 
-    public void deleteById(UUID id) {
-        pedidoRepository.deleteById(id);
-    }
+    @Transactional
+    public PedidoResponseDTO create(PedidoRequestDTO pedidoRequestDTO) {
 
-    public Pedido update(Pedido pedido){
-        if(pedido.getId() == null) {
-            throw new IllegalArgumentException("Pedido ID must not be null for update");
+        Cliente cliente = clienteRepository.findById((pedidoRequestDTO.clienteId()))
+                .orElseThrow(() -> new NoSuchElementException("Cliente não encontrado com o id: " + pedidoRequestDTO.clienteId()));
+
+        Pedido novoPedido = new Pedido();
+        novoPedido.setCliente(cliente);
+        novoPedido.setDataPrevisaoEntrega(pedidoRequestDTO.dataPrevisaoEntrega());
+        novoPedido.setStatus(PedidoStatus.SOLICITADO);
+
+        BigDecimal valorTotal = BigDecimal.ZERO;
+
+        for(ItemPedidoRequestDTO itemDTO: pedidoRequestDTO.itens()){
+            Produto produto = produtoRepository.findById(itemDTO.produtoId())
+                    .orElseThrow(() -> new NoSuchElementException("Produto não encontrado com o id: " + itemDTO.produtoId()));
+
+            // Lógica de quantidade no estoque (comentada por enquanto)
+            /*
+            if(produto.getQuantidadeEstoque() < itemDto.quantidade()){
+                 throw new BusinessException("Estoque insuficiente para o produto: " + produto.getNome());
+            }
+            produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() - itemDto.quantidade());
+            */
+
+            ItemPedido itemPedido = new ItemPedido();
+            itemPedido.setProduto(produto);
+            itemPedido.setPrecoUnitario(produto.getValorVenda());
+            itemPedido.setPedido(novoPedido);
+
+            novoPedido.getItens().add(itemPedido);
+            valorTotal = valorTotal.add(itemPedido.getPrecoUnitario().multiply(new BigDecimal(itemDTO.quantidade())));
         }
-        return pedidoRepository.save(pedido);
+
+        novoPedido.setValorTotal(valorTotal);
+        if(pedidoRequestDTO.desconto() !=null){
+            novoPedido.setDesconto(pedidoRequestDTO.desconto());
+        }
+
+        novoPedido.setValorFinal(novoPedido.getValorTotal().subtract(novoPedido.getDesconto()));
+
+        Pedido pedidoSalvo = pedidoRepository.save(novoPedido);
+
+        return pedidoMapper.toResponseDTO(pedidoSalvo);
     }
+
+    @Transactional
+    public PedidoResponseDTO findById(UUID id) {
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Pedido não encontrado com o id: " + id));
+
+        return pedidoMapper.toResponseDTO(pedido);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PedidoResponseDTO> findAll(Pageable pageable) {
+        Page<Pedido> pedidosEntity = pedidoRepository.findAll(pageable);
+
+        Page<PedidoResponseDTO> pedidosDto = pedidosEntity.map(pedido -> pedidoMapper.toResponseDTO(pedido));
+
+        return pedidosDto;
+    }
+
+
+    @Transactional
+    public PedidoResponseDTO updateStatus(UUID id, PedidoStatus novoStatus) {
+
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Pedido não encontrado com o ID: " + id));
+
+        if (pedido.getStatus() == PedidoStatus.ENTREGUE || pedido.getStatus() == PedidoStatus.CANCELADO) {
+            throw new IllegalArgumentException("Não é possível alterar o status de um pedido que já foi entregue ou cancelado.");
+        }
+
+        pedido.setStatus(novoStatus);
+
+        if (novoStatus == PedidoStatus.ENTREGUE) {
+            pedido.setDataEntrega(LocalDate.now());
+        }
+
+        Pedido pedidoAtualizado = pedidoRepository.save(pedido);
+
+        return pedidoMapper.toResponseDTO(pedidoAtualizado);
+    }
+
+
 }
