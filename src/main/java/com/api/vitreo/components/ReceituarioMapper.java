@@ -2,6 +2,7 @@ package com.api.vitreo.components;
 
 import com.api.vitreo.dto.receituario.ReceituarioRequestDTO;
 import com.api.vitreo.dto.receituario.ReceituarioResponseDTO;
+import com.api.vitreo.dto.receituario.ReceituarioUpdateRequestDTO;
 import com.api.vitreo.entity.Cliente;
 import com.api.vitreo.entity.Receituario;
 import com.api.vitreo.repository.ClienteRepository;
@@ -65,5 +66,26 @@ public class ReceituarioMapper {
         receituario.setDataReceita(dto.dataReceita());
 
         return receituario;
+    }
+
+    public void updateEntityFromDto(Receituario entity, ReceituarioUpdateRequestDTO dto){
+        entity.setEsfericoOd(dto.esfericoOd());
+        entity.setCilindricoOd(dto.cilindricoOd());
+        entity.setEixoOd(dto.eixoOd());
+        entity.setEsfericoOe(dto.esfericoOe());
+        entity.setCilindricoOe(dto.cilindricoOe());
+        entity.setEixoOe(dto.eixoOe());
+        entity.setAdicao(dto.adicao());
+        entity.setDistanciaPupilar(dto.distanciaPupilar());
+        entity.setDnpOd(dto.dnpOd());
+        entity.setDnpOe(dto.dnpOe());
+        entity.setCentroOpticoOd(dto.centroOpticoOd());
+        entity.setCentroOpticoOe(dto.centroOpticoOe());
+        entity.setAnguloMaior(dto.anguloMaior());
+        entity.setPonteAro(dto.ponteAro());
+        entity.setAnguloVertical(dto.anguloVertical());
+        entity.setNomeMedico(dto.nomeMedico());
+        entity.setCrmMedico(dto.crmMedico());
+        entity.setDataReceita(dto.dataReceita());
     }
 }
