@@ -8,6 +8,8 @@ import com.api.vitreo.entity.Receituario;
 import com.api.vitreo.repository.ClienteRepository;
 import com.api.vitreo.repository.ReceituarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,13 +44,16 @@ public class ReceituarioService {
         return receituarioMapper.toResponseDTO(receituarioSalvo);
     }
 
+    @Transactional
+    public Page<ReceituarioResponseDTO> findAll(Pageable pageable) {
+        Page<Receituario> receituariosEntity = receituarioRepository.findAll(pageable);
+        return receituariosEntity.map(receituarioMapper::toResponseDTO);
+    }
+
     public Optional<Receituario> findById(UUID id) {
         return receituarioRepository.findById(id);
     }
 
-    public List<Receituario> findAll() {
-        return receituarioRepository.findAll();
-    }
 
     public void deleteById(UUID id) {
         receituarioRepository.deleteById(id);
