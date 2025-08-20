@@ -2,6 +2,7 @@ package com.api.vitreo.controller;
 
 import com.api.vitreo.dto.receituario.ReceituarioRequestDTO;
 import com.api.vitreo.dto.receituario.ReceituarioResponseDTO;
+import com.api.vitreo.dto.receituario.ReceituarioUpdateRequestDTO;
 import com.api.vitreo.service.ReceituarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +50,12 @@ public class ReceituarioController {
         ReceituarioResponseDTO receituarioResponseDTO = receituarioService.findById(id);
 
         return ResponseEntity.ok(receituarioResponseDTO);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ReceituarioResponseDTO> updateReceituario(
+            @PathVariable UUID id, @Valid @RequestBody ReceituarioUpdateRequestDTO receituarioUpdateRequestDTO){
+        ReceituarioResponseDTO receituarioUpdated = receituarioService.update(id, receituarioUpdateRequestDTO);
+        return ResponseEntity.ok(receituarioUpdated);
     }
 }
