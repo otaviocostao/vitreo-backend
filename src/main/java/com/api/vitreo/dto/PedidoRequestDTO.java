@@ -10,7 +10,6 @@ import java.util.UUID;
 
 public record PedidoRequestDTO(
         @NotNull UUID clienteId,
-        @NotNull UUID funcionarioId,
         UUID receituarioId,
 
         @NotNull @Size(min = 1)
