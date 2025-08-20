@@ -4,6 +4,7 @@ import com.api.vitreo.components.PedidoMapper;
 import com.api.vitreo.dto.ItemPedidoRequestDTO;
 import com.api.vitreo.dto.PedidoRequestDTO;
 import com.api.vitreo.dto.PedidoResponseDTO;
+import com.api.vitreo.dto.PedidoUpdateRequestDTO;
 import com.api.vitreo.entity.Cliente;
 import com.api.vitreo.entity.ItemPedido;
 import com.api.vitreo.entity.Pedido;
@@ -148,5 +149,36 @@ public class PedidoService {
         Optional<Pedido> pedidoEntity = pedidoRepository.findByOrdemServico(ordemServico);
 
         return pedidoEntity.map(pedidoMapper::toResponseDTO);
+    }
+
+    @Transactional
+    public PedidoResponseDTO update(UUID id, PedidoUpdateRequestDTO dto) {
+
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Pedido não encontrado"));
+
+        if (pedido.getStatus() == PedidoStatus.ENTREGUE || pedido.getStatus() == PedidoStatus.CANCELADO) {
+            throw new IllegalArgumentException("Pedidos entregues ou cancelados não podem ser atualizados.");
+        }
+
+        pedido.getItens().clear();
+        BigDecimal valorTotal = BigDecimal.ZERO;
+
+        for (ItemPedidoRequestDTO itemDto : dto.itens()) {
+            Produto produto = produtoRepository.findById(itemDto.produtoId())
+                    .orElseThrow(() -> new NoSuchElementException("Produto não encontrado"));
+
+            ItemPedido itemPedido = new ItemPedido();
+            pedido.getItens().add(itemPedido);
+            valorTotal = valorTotal.add(itemPedido.getPrecoUnitario().multiply(new BigDecimal(itemDto.quantidade())));
+        }
+
+        pedido.setValorTotal(valorTotal);
+        pedido.setDesconto(dto.desconto() != null ? dto.desconto() : BigDecimal.ZERO);
+        pedido.setValorFinal(pedido.getValorTotal().subtract(pedido.getDesconto()));
+        pedido.setDataPrevisaoEntrega(dto.dataPrevisaoEntrega());
+
+        Pedido pedidoSalvo = pedidoRepository.save(pedido);
+        return pedidoMapper.toResponseDTO(pedidoSalvo);
     }
 }
