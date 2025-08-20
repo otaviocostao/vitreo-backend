@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/receituarios")
@@ -41,5 +42,12 @@ public class ReceituarioController {
     )Pageable pageable) {
         Page<ReceituarioResponseDTO> receituarios = receituarioService.findAll(pageable);
         return ResponseEntity.ok(receituarios);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ReceituarioResponseDTO> findById(@PathVariable UUID id){
+        ReceituarioResponseDTO receituarioResponseDTO = receituarioService.findById(id);
+
+        return ResponseEntity.ok(receituarioResponseDTO);
     }
 }

@@ -50,8 +50,12 @@ public class ReceituarioService {
         return receituariosEntity.map(receituarioMapper::toResponseDTO);
     }
 
-    public Optional<Receituario> findById(UUID id) {
-        return receituarioRepository.findById(id);
+    public ReceituarioResponseDTO findById(UUID id) {
+
+        Receituario receituario = receituarioRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Receituario não encontrado com o id: " + id));
+
+        return receituarioMapper.toResponseDTO(receituario);
     }
 
 
