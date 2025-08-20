@@ -3,6 +3,7 @@ package com.api.vitreo.service;
 import com.api.vitreo.components.ReceituarioMapper;
 import com.api.vitreo.dto.receituario.ReceituarioRequestDTO;
 import com.api.vitreo.dto.receituario.ReceituarioResponseDTO;
+import com.api.vitreo.dto.receituario.ReceituarioUpdateRequestDTO;
 import com.api.vitreo.entity.Cliente;
 import com.api.vitreo.entity.Receituario;
 import com.api.vitreo.repository.ClienteRepository;
@@ -50,6 +51,7 @@ public class ReceituarioService {
         return receituariosEntity.map(receituarioMapper::toResponseDTO);
     }
 
+    @Transactional
     public ReceituarioResponseDTO findById(UUID id) {
 
         Receituario receituario = receituarioRepository.findById(id)
@@ -59,14 +61,19 @@ public class ReceituarioService {
     }
 
 
-    public void deleteById(UUID id) {
-        receituarioRepository.deleteById(id);
+    @Transactional
+    public ReceituarioResponseDTO update(UUID id, ReceituarioUpdateRequestDTO receituarioRequest) {
+        Receituario receituario = receituarioRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Receituario não encontrado com o id: " + id));
+
+        receituarioMapper.updateEntityFromDto(receituario, receituarioRequest);
+
+        Receituario receituarioSalvo = receituarioRepository.save(receituario);
+
+        return receituarioMapper.toResponseDTO(receituarioSalvo);
     }
 
-    public Receituario update(Receituario receituario) {
-        if (receituario.getId() == null) {
-            throw new IllegalArgumentException("Receituario ID must not be null for update");
-        }
-        return receituarioRepository.save(receituario);
+    public void deleteById(UUID id) {
+        receituarioRepository.deleteById(id);
     }
 }
