@@ -82,7 +82,7 @@ public class ReceituarioService {
         Cliente cliente = clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new NoSuchElementException("Cliente não encontrado com o id: " + clienteId));
 
-        Page<Receituario> receituarioEntity = receituarioRepository.findByCliente(cliente);
+        Page<Receituario> receituarioEntity = receituarioRepository.findByClienteId(cliente);
 
         return receituarioEntity.map(receituarioMapper::toResponseDTO);
     }

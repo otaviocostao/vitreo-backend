@@ -10,5 +10,5 @@ import java.util.UUID;
 
 @Repository
 public interface ReceituarioRepository extends JpaRepository<Receituario, UUID> {
-    Page<Receituario> findByCliente(Cliente cliente);
+    Page<Receituario> findByClienteId(Cliente cliente);
 }

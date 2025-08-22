@@ -61,7 +61,7 @@ public class ReceituarioController {
     }
 
     @GetMapping("{/id}")
-    public ResponseEntity<Page<ReceituarioResponseDTO>> findByCliente (@PageableDefault(
+    public ResponseEntity<Page<ReceituarioResponseDTO>> findByClienteId (@PageableDefault(
             size = 10,
             page = 0) Pageable pageable,
             @PathVariable UUID id){
