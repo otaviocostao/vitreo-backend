@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -57,5 +58,15 @@ public class ReceituarioController {
             @PathVariable UUID id, @Valid @RequestBody ReceituarioUpdateRequestDTO receituarioUpdateRequestDTO){
         ReceituarioResponseDTO receituarioUpdated = receituarioService.update(id, receituarioUpdateRequestDTO);
         return ResponseEntity.ok(receituarioUpdated);
+    }
+
+    @GetMapping("{/id}")
+    public ResponseEntity<Page<ReceituarioResponseDTO>> findByCliente (@PageableDefault(
+            size = 10,
+            page = 0) Pageable pageable,
+            @PathVariable UUID id){
+        Page<ReceituarioResponseDTO> receituario = receituarioService.findByClienteId(id, pageable);
+
+        return ResponseEntity.ok(receituario);
     }
 }

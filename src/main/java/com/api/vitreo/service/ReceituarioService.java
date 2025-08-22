@@ -76,4 +76,14 @@ public class ReceituarioService {
     public void deleteById(UUID id) {
         receituarioRepository.deleteById(id);
     }
+
+    @Transactional
+    public Page<ReceituarioResponseDTO> findByClienteId(UUID clienteId, Pageable pageable) {
+        Cliente cliente = clienteRepository.findById(clienteId)
+                .orElseThrow(() -> new NoSuchElementException("Cliente não encontrado com o id: " + clienteId));
+
+        Page<Receituario> receituarioEntity = receituarioRepository.findByCliente(cliente);
+
+        return receituarioEntity.map(receituarioMapper::toResponseDTO);
+    }
 }
