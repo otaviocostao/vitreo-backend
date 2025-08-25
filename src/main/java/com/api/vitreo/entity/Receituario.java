@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -48,19 +49,26 @@ public class Receituario {
     @Column(precision = 4, scale = 2)
     private BigDecimal distanciaPupilar;
 
-    private Double dnpOd;
+    @Column(precision = 5, scale = 2)
+    private BigDecimal dnpOd;
 
-    private Double dnpOe;
+    @Column(precision = 5, scale = 2)
+    private BigDecimal dnpOe;
 
-    private Double centroOpticoOd;
+    @Column(precision = 5, scale = 2)
+    private BigDecimal centroOpticoOd;
 
-    private Double centroOpticoOe;
+    @Column(precision = 5, scale = 2)
+    private BigDecimal centroOpticoOe;
 
-    private Double anguloMaior;
+    @Column(precision = 5, scale = 2)
+    private BigDecimal anguloMaior;
 
-    private Double ponteAro;
+    @Column(precision = 5, scale = 2)
+    private BigDecimal ponteAro;
 
-    private Double anguloVertical;
+    @Column(precision = 5, scale = 2)
+    private BigDecimal anguloVertical;
 
     @Column(length = 255)
     private String nomeMedico;
@@ -69,4 +77,12 @@ public class Receituario {
     private String crmMedico;
 
     private LocalDate dataReceita;
+
+    @Column(updatable = false)
+    private LocalDateTime dataCadastro;
+
+    @PrePersist
+    public void onPersist() {
+        this.dataCadastro = LocalDateTime.now();
+    }
 }
