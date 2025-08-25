@@ -37,13 +37,12 @@ public abstract class Produto {
     @Column(unique = true)
     private String codigoBarras;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(precision = 10, scale = 2)
     private BigDecimal custo;
 
-    @Column(nullable = false, precision = 5, scale = 2)
+    @Column(precision = 5, scale = 2)
     private BigDecimal margemLucroPercentual;
 
-    @Column(nullable = false)
     private Integer quantidadeEstoque;
 
     @Column(nullable = false)
