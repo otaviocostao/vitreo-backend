@@ -21,5 +21,5 @@ public class Lente extends Produto {
     private String tratamento;
 
     @Column(length = 50)
-    private String tipo;
+    private String tipoLente;
 }
