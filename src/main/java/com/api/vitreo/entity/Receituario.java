@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -79,10 +78,10 @@ public class Receituario {
     private LocalDate dataReceita;
 
     @Column(updatable = false)
-    private LocalDateTime dataCadastro;
+    private LocalDate dataCadastro;
 
     @PrePersist
     public void onPersist() {
-        this.dataCadastro = LocalDateTime.now();
+        this.dataCadastro = LocalDate.now();
     }
 }
