@@ -78,11 +78,11 @@ public class ReceituarioService {
     }
 
     @Transactional
-    public Page<ReceituarioResponseDTO> findByClienteId(UUID clienteId, Pageable pageable) {
+    public Page<ReceituarioResponseDTO> findByClienteId(Pageable pageable, UUID clienteId) {
         Cliente cliente = clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new NoSuchElementException("Cliente não encontrado com o id: " + clienteId));
 
-        Page<Receituario> receituarioEntity = receituarioRepository.findByClienteId(cliente);
+        Page<Receituario> receituarioEntity = receituarioRepository.findByClienteId(cliente, pageable);
 
         return receituarioEntity.map(receituarioMapper::toResponseDTO);
     }
