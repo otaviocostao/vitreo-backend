@@ -60,12 +60,12 @@ public class ReceituarioController {
         return ResponseEntity.ok(receituarioUpdated);
     }
 
-    @GetMapping("{/id}")
+    @GetMapping("/cliente/{id}")
     public ResponseEntity<Page<ReceituarioResponseDTO>> findByClienteId (@PageableDefault(
             size = 10,
             page = 0) Pageable pageable,
             @PathVariable UUID id){
-        Page<ReceituarioResponseDTO> receituario = receituarioService.findByClienteId(id, pageable);
+        Page<ReceituarioResponseDTO> receituario = receituarioService.findByClienteId(pageable, id);
 
         return ResponseEntity.ok(receituario);
     }
