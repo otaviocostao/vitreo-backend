@@ -32,25 +32,25 @@ public record ReceituarioRequestDTO(
         BigDecimal distanciaPupilar,
 
         @DecimalMin(value = "0.0", message = "A DNP deve ser positiva")
-        Double dnpOd,
+        BigDecimal dnpOd,
 
         @DecimalMin(value = "0.0", message = "A DNP deve ser positiva")
-        Double dnpOe,
+        BigDecimal dnpOe,
 
         @DecimalMin(value = "0.0", message = "Centro óptico deve ser positivo")
-        Double centroOpticoOd,
+        BigDecimal centroOpticoOd,
 
         @DecimalMin(value = "0.0", message = "Centro óptico deve ser positivo")
-        Double centroOpticoOe,
+        BigDecimal centroOpticoOe,
 
         @DecimalMin(value = "0.0", message = "Medida do Angulo maior deve ser positiva")
-        Double anguloMaior,
+        BigDecimal anguloMaior,
 
         @DecimalMin(value = "0.0", message = "Medida da Ponte e aro deve ser positiva")
-        Double ponteAro,
+        BigDecimal ponteAro,
 
         @DecimalMin(value = "0.0", message = "Medida do Angulo Vertical deve ser positiva")
-        Double anguloVertical,
+        BigDecimal anguloVertical,
 
         String nomeMedico,
         String crmMedico,
