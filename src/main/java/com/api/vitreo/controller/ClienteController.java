@@ -5,6 +5,10 @@ import com.api.vitreo.dto.ClienteResponseDTO;
 import com.api.vitreo.entity.Cliente;
 import com.api.vitreo.service.ClienteService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -18,6 +22,7 @@ import java.util.UUID;
 @RequestMapping("/api/clientes")
 public class ClienteController {
 
+    @Autowired
     private ClienteService clienteService;
 
     @PostMapping
@@ -33,8 +38,11 @@ public class ClienteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Cliente>> findAll(){
-        return ResponseEntity.ok(clienteService.findAll());
+    public ResponseEntity<Page<ClienteResponseDTO>> findAll(
+            @PageableDefault(size = 10, page = 0) Pageable pageable
+    ){
+
+        return ResponseEntity.ok(clienteService.findAll(pageable));
     }
 
     @GetMapping("/{id}")
