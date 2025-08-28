@@ -6,6 +6,8 @@ import com.api.vitreo.dto.ClienteResponseDTO;
 import com.api.vitreo.entity.Cliente;
 import com.api.vitreo.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,7 @@ public class ClienteService {
         return clienteMapper.toResponseDTO(clienteSalvo);
     }
 
+    @Transactional
     public ClienteResponseDTO findById(UUID id) {
         Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Cliente with id " + id + " does not exist."));
 
@@ -45,9 +48,12 @@ public class ClienteService {
         return clienteDto;
     }
 
-    public List<Cliente> findAll() {
+    @Transactional
+    public Page<ClienteResponseDTO> findAll(Pageable pageable) {
 
-        return clienteRepository.findAll();
+        Page<Cliente> clientesPage = clienteRepository.findAll(pageable);
+
+        return clientesPage.map(clienteMapper::toResponseDTO);
     }
 
     public boolean existsById(UUID id) {
@@ -62,6 +68,7 @@ public class ClienteService {
         clienteRepository.deleteById(id);
     }
 
+    @Transactional
     public ClienteResponseDTO update(UUID id, ClienteRequestDTO clienteRequest) {
 
         Cliente clienteExistente = clienteRepository.findById(id)
