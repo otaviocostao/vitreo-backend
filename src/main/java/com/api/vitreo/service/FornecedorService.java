@@ -6,7 +6,10 @@ import com.api.vitreo.dto.FornecedorResponseDTO;
 import com.api.vitreo.entity.Fornecedor;
 import com.api.vitreo.repository.FornecedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -22,6 +25,7 @@ public class FornecedorService {
     @Autowired
     private FornecedorMapper fornecedorMapper;
 
+    @Transactional
     public FornecedorResponseDTO saveFornecedor(FornecedorRequestDTO fornecedorRequest) {
         Fornecedor fornecedor = fornecedorMapper.toEntity(fornecedorRequest);
 
@@ -30,6 +34,7 @@ public class FornecedorService {
         return fornecedorMapper.toResponseDTO(fornecedorSalvo);
     }
 
+    @Transactional
     public FornecedorResponseDTO findById(UUID id, FornecedorRequestDTO requestDTO) {
         Fornecedor fornecedorEntity = fornecedorRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Fornecedor not found with id: " + id));
         return fornecedorMapper.toResponseDTO(fornecedorEntity);
@@ -39,10 +44,13 @@ public class FornecedorService {
         fornecedorRepository.deleteById(id);
     }
 
-    public List<Fornecedor> findAll() {
-        return fornecedorRepository.findAll();
+    @Transactional
+    public Page<FornecedorResponseDTO> findAll(Pageable pageable) {
+        Page<Fornecedor> fornecedoresPage = fornecedorRepository.findAll(pageable);
+        return fornecedoresPage.map(fornecedorMapper::toResponseDTO);
     }
 
+    @Transactional
     public FornecedorResponseDTO update(UUID id, FornecedorRequestDTO fornecedorRequest) {
         Fornecedor fornecedorExistente = fornecedorRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Fornecedor not found with id: " + id));
 
