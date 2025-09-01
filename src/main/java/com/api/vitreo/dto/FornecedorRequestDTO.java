@@ -7,8 +7,6 @@ import org.hibernate.validator.constraints.br.CNPJ;
 import java.util.UUID;
 
 public record FornecedorRequestDTO(
-        UUID id,
-
         @NotBlank(message = "Razão Social é obrigatório")
         String razaoSocial,
 

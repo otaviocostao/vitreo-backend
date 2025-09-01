@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record PagamentoRequestDTO(
-        UUID id,
         UUID pedidoId,
         FormaPagamento formaPagamento,
         BigDecimal valorPago,
