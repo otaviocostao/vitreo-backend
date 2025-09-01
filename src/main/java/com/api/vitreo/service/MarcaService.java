@@ -1,38 +1,67 @@
 package com.api.vitreo.service;
 
+import com.api.vitreo.components.MarcaMapper;
+import com.api.vitreo.dto.MarcaRequestDTO;
+import com.api.vitreo.dto.MarcaResponseDTO;
 import com.api.vitreo.entity.Marca;
 import com.api.vitreo.repository.MarcaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
 public class MarcaService {
 
+    @Autowired
     private MarcaRepository marcaRepository;
 
-    public Marca save(Marca marca) {
-        return marcaRepository.save(marca);
+    @Autowired
+    private MarcaMapper marcaMapper;
+
+    @Transactional
+    public MarcaResponseDTO save(MarcaRequestDTO marcaRequestDTO) {
+
+        Marca marca = marcaMapper.toEntity(marcaRequestDTO);
+
+        Marca marcaSalva = marcaRepository.save(marca);
+
+        return marcaMapper.toResponseDTO(marcaSalva);
     }
 
-    public Optional<Marca> findById(UUID id) {
-        return marcaRepository.findById(id);
+    @Transactional
+    public MarcaResponseDTO findById(UUID id) {
+        Marca marca = marcaRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Marca não encontrada com o ID: " + id));
+        return marcaMapper.toResponseDTO(marca);
     }
 
-    public List<Marca> findAll() {
-        return marcaRepository.findAll();
+    @Transactional
+    public Page<MarcaResponseDTO> findAll(Pageable pageable) {
+        Page<Marca> marcasEntities = marcaRepository.findAll(pageable);
+        return marcasEntities.map(marcaMapper::toResponseDTO);
     }
 
+    @Transactional
     public void deleteById(UUID id) {
+        Marca marca = marcaRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Marca não encontrada com o ID: " + id));
+
         marcaRepository.deleteById(id);
     }
 
-    public Marca update(Marca marca) {
-        if (marca.getId() == null) {
-            throw new IllegalArgumentException("Marca ID must not be null for update");
-        }
-        return marcaRepository.save(marca);
+    @Transactional
+    public MarcaResponseDTO update(UUID id, MarcaRequestDTO marcaRequestDTO) {
+        Marca marca = marcaRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Marca não encontrada com o ID: " + id));
+
+        marca.setNome(marcaRequestDTO.nome());
+        Marca marcaSalva = marcaRepository.save(marca);
+
+        return marcaMapper.toResponseDTO(marcaSalva);
     }
 }
