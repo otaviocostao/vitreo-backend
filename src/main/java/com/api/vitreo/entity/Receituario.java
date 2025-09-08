@@ -19,7 +19,7 @@ import java.util.UUID;
 public class Receituario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
