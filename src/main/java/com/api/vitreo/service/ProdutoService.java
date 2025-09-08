@@ -70,7 +70,7 @@ public class ProdutoService {
     }
 
     @Transactional
-    public ProdutoResponseDTO findByID(UUID id){
+    public ProdutoResponseDTO findById(UUID id){
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Produto não encontrado com o ID: " + id));
 
