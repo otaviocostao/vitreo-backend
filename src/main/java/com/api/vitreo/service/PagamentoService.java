@@ -1,22 +1,22 @@
 package com.api.vitreo.service;
 
 import com.api.vitreo.components.PagamentoMapper;
+import com.api.vitreo.dto.PagamentoAninhadoRequestDTO;
 import com.api.vitreo.dto.PagamentoRequestDTO;
 import com.api.vitreo.dto.PagamentoResponseDTO;
 import com.api.vitreo.entity.Pagamento;
 import com.api.vitreo.entity.Pedido;
+import com.api.vitreo.enums.PedidoStatus;
+import com.api.vitreo.exception.BusinessException;
+import com.api.vitreo.exception.ResourceNotFoundException;
 import com.api.vitreo.repository.PagamentoRepository;
 import com.api.vitreo.repository.PedidoRepository;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -32,11 +32,31 @@ public class PagamentoService {
     private PagamentoMapper pagamentoMapper;
 
     @Transactional
-    public PagamentoResponseDTO create(@Valid PagamentoRequestDTO pagamentoRequestDTO) {
+    public PagamentoResponseDTO create(PagamentoRequestDTO pagamentoRequestDTO) {
         Pedido pedido = pedidoRepository.findById(pagamentoRequestDTO.pedidoId())
-                .orElseThrow(() -> new NoSuchElementException("Pedido não encontrado com ID: " + pagamentoRequestDTO.pedidoId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado com ID: " + pagamentoRequestDTO.pedidoId()));
 
         Pagamento pagamento = pagamentoMapper.toEntity(pagamentoRequestDTO, pedido);
+
+        if (pedido.getStatus() == PedidoStatus.CANCELADO) {
+            throw new BusinessException("Não é possível adicionar pagamento a um pedido entregue ou cancelado.");
+        }
+
+        pagamentoRepository.save(pagamento);
+
+        return pagamentoMapper.toResponseDto(pagamento);
+    }
+
+    @Transactional
+    public PagamentoResponseDTO create(UUID pedidoId, PagamentoAninhadoRequestDTO pagamentoRequestDTO) {
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado com ID: " + pedidoId));
+
+        Pagamento pagamento = pagamentoMapper.toEntity(pagamentoRequestDTO, pedido);
+
+        if (pedido.getStatus() == PedidoStatus.CANCELADO) {
+            throw new BusinessException("Não é possível adicionar pagamento a um pedido cancelado.");
+        }
 
         pagamentoRepository.save(pagamento);
 
@@ -46,7 +66,8 @@ public class PagamentoService {
     @Transactional
     public PagamentoResponseDTO findById(UUID id) {
         Pagamento pagamento = pagamentoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Pagamento não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(("Pagamento não encontrado com ID: " + id)));
+
         return pagamentoMapper.toResponseDto(pagamento);
     }
 
@@ -64,7 +85,7 @@ public class PagamentoService {
     @Transactional
     public PagamentoResponseDTO update(UUID id, PagamentoRequestDTO pagamentoRequestDTO) {
         Pagamento pagamento = pagamentoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Pagamento não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(("Pagamento não encontrado com ID: " + id)));
 
 
         pagamento.setFormaPagamento(pagamentoRequestDTO.formaPagamento());
@@ -80,7 +101,7 @@ public class PagamentoService {
     @Transactional
     public Page<PagamentoResponseDTO> findAllByPedidoId(UUID id, Pageable pageable) {
         Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Pedido não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(("Pedido não encontrado com ID: " + id)));
 
         Page<Pagamento> pagamentosPage = pagamentoRepository.findAllByPedido(pedido, pageable);
 
