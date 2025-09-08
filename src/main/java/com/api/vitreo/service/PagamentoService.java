@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.UUID;
 
 @Service
@@ -38,13 +40,7 @@ public class PagamentoService {
 
         Pagamento pagamento = pagamentoMapper.toEntity(pagamentoRequestDTO, pedido);
 
-        if (pedido.getStatus() == PedidoStatus.CANCELADO) {
-            throw new BusinessException("Não é possível adicionar pagamento a um pedido entregue ou cancelado.");
-        }
-
-        pagamentoRepository.save(pagamento);
-
-        return pagamentoMapper.toResponseDto(pagamento);
+        return registrarNovoPagamento(pedido, pagamento);
     }
 
     @Transactional
@@ -54,13 +50,7 @@ public class PagamentoService {
 
         Pagamento pagamento = pagamentoMapper.toEntity(pagamentoRequestDTO, pedido);
 
-        if (pedido.getStatus() == PedidoStatus.CANCELADO) {
-            throw new BusinessException("Não é possível adicionar pagamento a um pedido cancelado.");
-        }
-
-        pagamentoRepository.save(pagamento);
-
-        return pagamentoMapper.toResponseDto(pagamento);
+        return registrarNovoPagamento(pedido, pagamento);
     }
 
     @Transactional
@@ -79,7 +69,16 @@ public class PagamentoService {
 
     @Transactional
     public void deleteById(UUID id) {
-        pagamentoRepository.deleteById(id);
+        Pagamento pagamento = pagamentoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(("Pagamento não encontrado com ID: " + id)));
+
+        Pedido pedido = pagamento.getPedido();
+
+        if (pedido.getStatus() == PedidoStatus.ORCAMENTO) {
+            pagamentoRepository.deleteById(id);
+        }else {
+            throw new BusinessException("Não é possível excluir pagamentos de um pedido que já está em produção ou finalizado. ");
+        }
     }
 
     @Transactional
@@ -106,5 +105,39 @@ public class PagamentoService {
         Page<Pagamento> pagamentosPage = pagamentoRepository.findAllByPedido(pedido, pageable);
 
         return pagamentosPage.map(pagamentoMapper::toResponseDto);
+    }
+
+    private PagamentoResponseDTO registrarNovoPagamento(Pedido pedido, Pagamento pagamento) {
+        if (pedido.getStatus() == PedidoStatus.CANCELADO) {
+            throw new BusinessException("Não é possível adicionar pagamento a um pedido entregue ou cancelado.");
+        }
+
+        BigDecimal totalPago = pagamentoRepository.findTotalPagoByPedidoId(pedido.getId());
+
+        if (totalPago == null) {
+            totalPago = BigDecimal.ZERO;
+        }
+
+        BigDecimal valorFinalDoPedido = pedido.getValorFinal();
+        BigDecimal saldoDevedor = valorFinalDoPedido.subtract(totalPago);
+
+        saldoDevedor = saldoDevedor.setScale(2, RoundingMode.HALF_UP);
+
+        if (saldoDevedor.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BusinessException("Este pedido já foi totalmente pago.");
+        }
+
+        BigDecimal valorNovoPagamento = pagamento.getValorPago();
+
+        if (valorNovoPagamento.compareTo(saldoDevedor) > 0) {
+            throw new BusinessException(
+                    String.format("O valor do pagamento (R$ %.2f) excede o saldo devedor de R$ %.2f.",
+                            valorNovoPagamento, saldoDevedor)
+            );
+        }
+
+        Pagamento pagamentoSalvo = pagamentoRepository.save(pagamento);
+
+        return pagamentoMapper.toResponseDto(pagamentoSalvo);
     }
 }
