@@ -36,9 +36,15 @@ public class PagamentoController {
 
     @GetMapping
     public ResponseEntity<Page<PagamentoResponseDTO>> findAll(
-            @PageableDefault(size = 10, page = 0) Pageable pageable){
-        Page<PagamentoResponseDTO> pagamentos = pagamentoService.findAll(pageable);
+            @RequestParam(required = false) UUID pedidoId,
+            @PageableDefault(size = 10, page = 0) Pageable pageable) {
 
+        Page<PagamentoResponseDTO> pagamentos;
+        if (pedidoId != null) {
+            pagamentos = pagamentoService.findAllByPedidoId(pedidoId, pageable);
+        } else {
+            pagamentos = pagamentoService.findAll(pageable);
+        }
         return ResponseEntity.ok(pagamentos);
     }
 
@@ -47,15 +53,6 @@ public class PagamentoController {
         PagamentoResponseDTO pagamento = pagamentoService.findById(id);
 
         return ResponseEntity.ok(pagamento);
-    }
-
-    @GetMapping("/pedido/{id}")
-    public ResponseEntity<Page<PagamentoResponseDTO>> findAllByPedidoId(
-            @PathVariable UUID id,
-            @PageableDefault(size = 10, page = 0) Pageable pageable){
-        Page<PagamentoResponseDTO> pagamentos = pagamentoService.findAllByPedidoId(id, pageable);
-
-        return ResponseEntity.ok(pagamentos);
     }
 
     @DeleteMapping("/{id}")
