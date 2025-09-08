@@ -100,6 +100,13 @@ public class PedidoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // Soft delete sem apagar o regitro do banco de dados, apenas alterando o status do pedido para CANCELADO
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id){
+        pedidoService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     // Rotas relacionadas a pagamentos do pedido
 
     @PostMapping("/{pedidoId}/pagamentos")

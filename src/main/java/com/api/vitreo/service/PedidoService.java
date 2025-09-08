@@ -10,6 +10,8 @@ import com.api.vitreo.entity.ItemPedido;
 import com.api.vitreo.entity.Pedido;
 import com.api.vitreo.entity.Produto;
 import com.api.vitreo.enums.PedidoStatus;
+import com.api.vitreo.exception.BusinessException;
+import com.api.vitreo.exception.ResourceNotFoundException;
 import com.api.vitreo.repository.ClienteRepository;
 import com.api.vitreo.repository.PedidoRepository;
 import com.api.vitreo.repository.ProdutoRepository;
@@ -180,5 +182,19 @@ public class PedidoService {
 
         Pedido pedidoSalvo = pedidoRepository.save(pedido);
         return pedidoMapper.toResponseDTO(pedidoSalvo);
+    }
+
+    @Transactional
+    public void delete(UUID id) {
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado com o id: " + id));
+
+        if (pedido.getStatus() == PedidoStatus.ENTREGUE) {
+            throw new BusinessException("Pedidos entregues não podem ser cancelados.");
+        }
+
+        pedido.setStatus(PedidoStatus.CANCELADO);
+
+        pedidoRepository.save(pedido);
     }
 }
