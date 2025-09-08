@@ -1,5 +1,6 @@
 package com.api.vitreo.components;
 
+import com.api.vitreo.dto.PagamentoAninhadoRequestDTO;
 import com.api.vitreo.dto.PagamentoRequestDTO;
 import com.api.vitreo.dto.PagamentoResponseDTO;
 import com.api.vitreo.entity.Pagamento;
@@ -10,6 +11,18 @@ import org.springframework.stereotype.Component;
 public class PagamentoMapper {
 
     public Pagamento toEntity(PagamentoRequestDTO pagamentoRequest, Pedido pedido) {
+        Pagamento pagamento = new Pagamento();
+
+        pagamento.setPedido(pedido);
+        pagamento.setFormaPagamento(pagamentoRequest.formaPagamento());
+        pagamento.setValorPago(pagamentoRequest.valorPago());
+        pagamento.setNumeroParcelas(pagamentoRequest.numeroParcelas());
+        pagamento.setDataPagamento(pagamentoRequest.dataPagamento());
+
+        return pagamento;
+    }
+
+    public Pagamento toEntity(PagamentoAninhadoRequestDTO pagamentoRequest, Pedido pedido) {
         Pagamento pagamento = new Pagamento();
 
         pagamento.setPedido(pedido);
