@@ -16,7 +16,6 @@ public class FornecedorMapper {
         }
 
         Fornecedor fornecedor = new Fornecedor();
-        fornecedor.setId(fornecedorRequest.id());
         fornecedor.setRazaoSocial(fornecedorRequest.razaoSocial());
         fornecedor.setNomeFantasia(fornecedorRequest.nomeFantasia());
         fornecedor.setCnpj(fornecedorRequest.cnpj());
