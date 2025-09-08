@@ -1,10 +1,10 @@
 package com.api.vitreo.service;
 
 import com.api.vitreo.components.PedidoMapper;
-import com.api.vitreo.dto.ItemPedidoRequestDTO;
-import com.api.vitreo.dto.PedidoRequestDTO;
-import com.api.vitreo.dto.PedidoResponseDTO;
-import com.api.vitreo.dto.PedidoUpdateRequestDTO;
+import com.api.vitreo.dto.pedido.ItemPedidoRequestDTO;
+import com.api.vitreo.dto.pedido.PedidoRequestDTO;
+import com.api.vitreo.dto.pedido.PedidoResponseDTO;
+import com.api.vitreo.dto.pedido.PedidoUpdateRequestDTO;
 import com.api.vitreo.entity.Cliente;
 import com.api.vitreo.entity.ItemPedido;
 import com.api.vitreo.entity.Pedido;

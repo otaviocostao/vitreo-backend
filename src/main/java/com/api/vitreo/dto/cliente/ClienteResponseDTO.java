@@ -1,4 +1,6 @@
-package com.api.vitreo.dto;
+package com.api.vitreo.dto.cliente;
+
+import com.api.vitreo.dto.EnderecoDTO;
 
 import java.time.LocalDate;
 import java.util.UUID;

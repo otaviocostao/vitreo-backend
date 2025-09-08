@@ -1,9 +1,8 @@
 package com.api.vitreo.components;
 
-import com.api.vitreo.dto.ClienteSimplificadoDTO;
-import com.api.vitreo.dto.ItemPedidoResponseDTO;
-import com.api.vitreo.dto.PedidoRequestDTO;
-import com.api.vitreo.dto.PedidoResponseDTO;
+import com.api.vitreo.dto.cliente.ClienteSimplificadoDTO;
+import com.api.vitreo.dto.pedido.ItemPedidoResponseDTO;
+import com.api.vitreo.dto.pedido.PedidoResponseDTO;
 import com.api.vitreo.entity.ItemPedido;
 import com.api.vitreo.entity.Pedido;
 import org.springframework.stereotype.Component;

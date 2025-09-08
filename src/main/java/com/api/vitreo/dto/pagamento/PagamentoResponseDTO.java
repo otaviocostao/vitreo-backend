@@ -1,4 +1,4 @@
-package com.api.vitreo.dto;
+package com.api.vitreo.dto.pagamento;
 
 import com.api.vitreo.enums.FormaPagamento;
 

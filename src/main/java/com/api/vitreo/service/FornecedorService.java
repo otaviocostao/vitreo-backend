@@ -1,8 +1,8 @@
 package com.api.vitreo.service;
 
 import com.api.vitreo.components.FornecedorMapper;
-import com.api.vitreo.dto.FornecedorRequestDTO;
-import com.api.vitreo.dto.FornecedorResponseDTO;
+import com.api.vitreo.dto.fornecedor.FornecedorRequestDTO;
+import com.api.vitreo.dto.fornecedor.FornecedorResponseDTO;
 import com.api.vitreo.entity.Fornecedor;
 import com.api.vitreo.repository.FornecedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

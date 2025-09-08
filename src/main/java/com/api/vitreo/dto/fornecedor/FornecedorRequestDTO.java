@@ -1,10 +1,9 @@
-package com.api.vitreo.dto;
+package com.api.vitreo.dto.fornecedor;
 
+import com.api.vitreo.dto.EnderecoDTO;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.br.CNPJ;
-
-import java.util.UUID;
 
 public record FornecedorRequestDTO(
         @NotBlank(message = "Razão Social é obrigatório")

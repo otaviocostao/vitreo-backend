@@ -1,6 +1,5 @@
-package com.api.vitreo.dto;
+package com.api.vitreo.dto.pedido;
 
-import com.api.vitreo.entity.ItemPedido;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 

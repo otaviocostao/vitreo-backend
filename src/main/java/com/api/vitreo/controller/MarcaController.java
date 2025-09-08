@@ -1,7 +1,7 @@
 package com.api.vitreo.controller;
 
-import com.api.vitreo.dto.MarcaRequestDTO;
-import com.api.vitreo.dto.MarcaResponseDTO;
+import com.api.vitreo.dto.marca.MarcaRequestDTO;
+import com.api.vitreo.dto.marca.MarcaResponseDTO;
 import com.api.vitreo.service.MarcaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

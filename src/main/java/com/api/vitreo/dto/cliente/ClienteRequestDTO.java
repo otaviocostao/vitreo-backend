@@ -1,5 +1,6 @@
-package com.api.vitreo.dto;
+package com.api.vitreo.dto.cliente;
 
+import com.api.vitreo.dto.EnderecoDTO;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

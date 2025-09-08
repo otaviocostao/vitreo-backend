@@ -1,7 +1,7 @@
 package com.api.vitreo.controller;
 
-import com.api.vitreo.dto.PagamentoRequestDTO;
-import com.api.vitreo.dto.PagamentoResponseDTO;
+import com.api.vitreo.dto.pagamento.PagamentoRequestDTO;
+import com.api.vitreo.dto.pagamento.PagamentoResponseDTO;
 import com.api.vitreo.service.PagamentoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

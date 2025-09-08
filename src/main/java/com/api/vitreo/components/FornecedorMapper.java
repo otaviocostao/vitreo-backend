@@ -1,8 +1,8 @@
 package com.api.vitreo.components;
 
 import com.api.vitreo.dto.EnderecoDTO;
-import com.api.vitreo.dto.FornecedorRequestDTO;
-import com.api.vitreo.dto.FornecedorResponseDTO;
+import com.api.vitreo.dto.fornecedor.FornecedorRequestDTO;
+import com.api.vitreo.dto.fornecedor.FornecedorResponseDTO;
 import com.api.vitreo.entity.Endereco;
 import com.api.vitreo.entity.Fornecedor;
 import org.springframework.stereotype.Component;

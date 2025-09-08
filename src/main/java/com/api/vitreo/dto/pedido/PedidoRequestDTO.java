@@ -1,4 +1,4 @@
-package com.api.vitreo.dto;
+package com.api.vitreo.dto.pedido;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

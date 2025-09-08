@@ -1,5 +1,6 @@
-package com.api.vitreo.dto;
+package com.api.vitreo.dto.pedido;
 
+import com.api.vitreo.dto.cliente.ClienteSimplificadoDTO;
 import com.api.vitreo.enums.PedidoStatus;
 
 import java.math.BigDecimal;

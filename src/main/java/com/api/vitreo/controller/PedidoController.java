@@ -1,9 +1,9 @@
 package com.api.vitreo.controller;
 
-import com.api.vitreo.dto.PagamentoAninhadoRequestDTO;
-import com.api.vitreo.dto.PagamentoResponseDTO;
-import com.api.vitreo.dto.PedidoRequestDTO;
-import com.api.vitreo.dto.PedidoResponseDTO;
+import com.api.vitreo.dto.pagamento.PagamentoAninhadoRequestDTO;
+import com.api.vitreo.dto.pagamento.PagamentoResponseDTO;
+import com.api.vitreo.dto.pedido.PedidoRequestDTO;
+import com.api.vitreo.dto.pedido.PedidoResponseDTO;
 import com.api.vitreo.enums.PedidoStatus;
 import com.api.vitreo.service.PagamentoService;
 import com.api.vitreo.service.PedidoService;

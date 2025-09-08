@@ -1,7 +1,7 @@
 package com.api.vitreo.components;
 
-import com.api.vitreo.dto.ClienteRequestDTO;
-import com.api.vitreo.dto.ClienteResponseDTO;
+import com.api.vitreo.dto.cliente.ClienteRequestDTO;
+import com.api.vitreo.dto.cliente.ClienteResponseDTO;
 import com.api.vitreo.dto.EnderecoDTO;
 import com.api.vitreo.entity.Cliente;
 import com.api.vitreo.entity.Endereco;

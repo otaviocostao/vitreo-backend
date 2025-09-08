@@ -1,4 +1,4 @@
-package com.api.vitreo.dto;
+package com.api.vitreo.dto.pedido;
 
 import com.api.vitreo.entity.Marca;
 

@@ -1,8 +1,7 @@
 package com.api.vitreo.controller;
 
-import com.api.vitreo.dto.FornecedorRequestDTO;
-import com.api.vitreo.dto.FornecedorResponseDTO;
-import com.api.vitreo.entity.Fornecedor;
+import com.api.vitreo.dto.fornecedor.FornecedorRequestDTO;
+import com.api.vitreo.dto.fornecedor.FornecedorResponseDTO;
 import com.api.vitreo.service.FornecedorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 @RestController

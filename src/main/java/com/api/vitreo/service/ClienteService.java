@@ -1,8 +1,8 @@
 package com.api.vitreo.service;
 
 import com.api.vitreo.components.ClienteMapper;
-import com.api.vitreo.dto.ClienteRequestDTO;
-import com.api.vitreo.dto.ClienteResponseDTO;
+import com.api.vitreo.dto.cliente.ClienteRequestDTO;
+import com.api.vitreo.dto.cliente.ClienteResponseDTO;
 import com.api.vitreo.entity.Cliente;
 import com.api.vitreo.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

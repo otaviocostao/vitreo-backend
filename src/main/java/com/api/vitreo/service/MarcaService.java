@@ -1,8 +1,8 @@
 package com.api.vitreo.service;
 
 import com.api.vitreo.components.MarcaMapper;
-import com.api.vitreo.dto.MarcaRequestDTO;
-import com.api.vitreo.dto.MarcaResponseDTO;
+import com.api.vitreo.dto.marca.MarcaRequestDTO;
+import com.api.vitreo.dto.marca.MarcaResponseDTO;
 import com.api.vitreo.entity.Marca;
 import com.api.vitreo.repository.MarcaRepository;
 import org.springframework.beans.factory.annotation.Autowired;

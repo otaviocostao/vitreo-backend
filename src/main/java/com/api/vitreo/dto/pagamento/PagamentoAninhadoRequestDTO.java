@@ -1,13 +1,11 @@
-package com.api.vitreo.dto;
+package com.api.vitreo.dto.pagamento;
 
 import com.api.vitreo.enums.FormaPagamento;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
-public record PagamentoRequestDTO(
-        UUID pedidoId,
+public record PagamentoAninhadoRequestDTO(
         FormaPagamento formaPagamento,
         BigDecimal valorPago,
         Integer numeroParcelas,

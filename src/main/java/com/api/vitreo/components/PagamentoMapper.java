@@ -1,8 +1,8 @@
 package com.api.vitreo.components;
 
-import com.api.vitreo.dto.PagamentoAninhadoRequestDTO;
-import com.api.vitreo.dto.PagamentoRequestDTO;
-import com.api.vitreo.dto.PagamentoResponseDTO;
+import com.api.vitreo.dto.pagamento.PagamentoAninhadoRequestDTO;
+import com.api.vitreo.dto.pagamento.PagamentoRequestDTO;
+import com.api.vitreo.dto.pagamento.PagamentoResponseDTO;
 import com.api.vitreo.entity.Pagamento;
 import com.api.vitreo.entity.Pedido;
 import org.springframework.stereotype.Component;

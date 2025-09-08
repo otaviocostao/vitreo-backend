@@ -1,8 +1,7 @@
-package com.api.vitreo.dto;
+package com.api.vitreo.dto.fornecedor;
 
-import com.api.vitreo.entity.Marca;
+import com.api.vitreo.dto.EnderecoDTO;
 
-import java.util.List;
 import java.util.UUID;
 
 public record FornecedorResponseDTO(
