@@ -4,7 +4,9 @@ import com.api.vitreo.dto.PagamentoRequestDTO;
 import com.api.vitreo.dto.PagamentoResponseDTO;
 import com.api.vitreo.entity.Pagamento;
 import com.api.vitreo.entity.Pedido;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PagamentoMapper {
 
     public Pagamento toEntity(PagamentoRequestDTO pagamentoRequest, Pedido pedido) {
