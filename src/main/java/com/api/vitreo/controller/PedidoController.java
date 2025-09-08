@@ -1,8 +1,11 @@
 package com.api.vitreo.controller;
 
+import com.api.vitreo.dto.PagamentoAninhadoRequestDTO;
+import com.api.vitreo.dto.PagamentoResponseDTO;
 import com.api.vitreo.dto.PedidoRequestDTO;
 import com.api.vitreo.dto.PedidoResponseDTO;
 import com.api.vitreo.enums.PedidoStatus;
+import com.api.vitreo.service.PagamentoService;
 import com.api.vitreo.service.PedidoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -24,6 +26,9 @@ public class PedidoController {
 
     @Autowired
     private PedidoService pedidoService;
+
+    @Autowired
+    private PagamentoService pagamentoService;
 
 
     @PostMapping
@@ -93,5 +98,31 @@ public class PedidoController {
         return pedidoService.findByOrdemServico(ordemServico)
                 .map(pedidoDto -> ResponseEntity.ok(pedidoDto))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Rotas relacionadas a pagamentos do pedido
+
+    @PostMapping("/{pedidoId}/pagamentos")
+    public ResponseEntity<PagamentoResponseDTO> adicionarPagamento(
+            @PathVariable UUID pedidoId,
+            @Valid @RequestBody PagamentoAninhadoRequestDTO pagamentoDTO) {
+
+        PagamentoResponseDTO novoPagamento = pagamentoService.create(pedidoId, pagamentoDTO);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/api/pagamentos/{id}")
+                .buildAndExpand(novoPagamento.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(novoPagamento);
+    }
+
+    @GetMapping("/{pedidoId}/pagamentos")
+    public ResponseEntity<Page<PagamentoResponseDTO>> listarPagamentosDoPedido(
+            @PathVariable UUID pedidoId, Pageable pageable) {
+
+        Page<PagamentoResponseDTO> pagamentos = pagamentoService.findAllByPedidoId(pedidoId, pageable);
+        return ResponseEntity.ok(pagamentos);
     }
 }
