@@ -47,7 +47,7 @@ public class FornecedorController {
             size = 10,
             page = 0
     )Pageable pageable) {
-        Page<FornecedorResponseDTO> fornecedores = fornecedorService.findAll();
+        Page<FornecedorResponseDTO> fornecedores = fornecedorService.findAll(pageable);
         return ResponseEntity.ok(fornecedores);
     }
 
