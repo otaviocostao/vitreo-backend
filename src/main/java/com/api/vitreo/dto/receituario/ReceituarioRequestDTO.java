@@ -19,7 +19,7 @@ public record ReceituarioRequestDTO(
 
         BigDecimal esfericoOe,
 
-        @DecimalMax(value = "0.0", message = "Cilíndrico OD deve ser negativo ou zero")
+        @DecimalMax(value = "0.0", message = "Cilíndrico OE deve ser negativo ou zero")
         BigDecimal cilindricoOe,
 
         @Min(value = 0, message = "O eixo deve ser no mínimo 0") @Max(value = 180, message = "O eixo deve ser no máximo 180")
@@ -28,7 +28,7 @@ public record ReceituarioRequestDTO(
         @DecimalMin(value = "0.0", message = "A adição deve ser positiva")
         BigDecimal adicao,
 
-        @DecimalMax(value = "0.0", message = "Distância pupilar deve ser positiva")
+        @DecimalMin(value = "0.0", message = "Distância pupilar deve ser positiva")
         BigDecimal distanciaPupilar,
 
         @DecimalMin(value = "0.0", message = "A DNP deve ser positiva")
