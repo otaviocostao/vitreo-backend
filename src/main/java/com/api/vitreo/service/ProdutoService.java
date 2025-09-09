@@ -57,6 +57,8 @@ public class ProdutoService {
                 lente.setTipoLente(produtoRequestDTO.tipoLente());
                 lente.setTratamento(produtoRequestDTO.tratamento());
                 lente.setIndiceRefracao(produtoRequestDTO.indiceRefracao());
+                novoProduto = lente;
+                break;
             default:
                 throw new IllegalArgumentException("Tipo de produto inválido: " + produtoRequestDTO.tipoProduto());
         }
