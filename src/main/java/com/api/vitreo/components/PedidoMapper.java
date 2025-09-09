@@ -3,8 +3,7 @@ package com.api.vitreo.components;
 import com.api.vitreo.dto.cliente.ClienteSimplificadoDTO;
 import com.api.vitreo.dto.pedido.ItemPedidoResponseDTO;
 import com.api.vitreo.dto.pedido.PedidoResponseDTO;
-import com.api.vitreo.entity.ItemPedido;
-import com.api.vitreo.entity.Pedido;
+import com.api.vitreo.entity.*;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -24,6 +23,16 @@ public class PedidoMapper {
                 .map(this::toItemPedidoResponseDTO)
                 .collect(Collectors.toList());
 
+        BigDecimal valorTotalArmacoes = pedido.getItens().stream()
+                .filter(item -> item.getProduto() instanceof Armacao)
+                .map(item -> item.getPrecoUnitario().multiply(new BigDecimal(item.getQuantidade())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal valorTotalLentes = pedido.getItens().stream()
+                .filter(item -> item.getProduto() instanceof Lente)
+                .map(item -> item.getPrecoUnitario().multiply(new BigDecimal(item.getQuantidade())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
         return new PedidoResponseDTO(
                 pedido.getId(),
                 pedido.getOrdemServico(),
@@ -31,8 +40,8 @@ public class PedidoMapper {
                 pedido.getDataPedido(),
                 pedido.getDataPrevisaoEntrega(),
                 pedido.getDataEntrega(),
-                pedido.getValorArmacao(),
-                pedido.getValorLentes(),
+                valorTotalArmacoes,
+                valorTotalLentes,
                 pedido.getValorTotal(),
                 pedido.getDesconto(),
                 pedido.getValorFinal(),
@@ -43,9 +52,14 @@ public class PedidoMapper {
 
     private ItemPedidoResponseDTO toItemPedidoResponseDTO(ItemPedido item) {
         BigDecimal subtotal = item.getPrecoUnitario().multiply(new BigDecimal(item.getQuantidade()));
+
+        Marca marca = item.getProduto().getMarca();
+
+        String nomeMarca = (marca != null) ? marca.getNome() : null;
+
         return new ItemPedidoResponseDTO(
                 item.getProduto().getNome(),
-                item.getProduto().getMarca(),
+                nomeMarca,
                 item.getQuantidade(),
                 item.getPrecoUnitario(),
                 subtotal
