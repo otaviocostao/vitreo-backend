@@ -49,6 +49,7 @@ public class PedidoService {
                 .orElseThrow(() -> new NoSuchElementException("Cliente não encontrado com o id: " + pedidoRequestDTO.clienteId()));
 
         Pedido novoPedido = new Pedido();
+
         novoPedido.setCliente(cliente);
         novoPedido.setDataPrevisaoEntrega(pedidoRequestDTO.dataPrevisaoEntrega());
         novoPedido.setStatus(PedidoStatus.SOLICITADO);
@@ -70,6 +71,7 @@ public class PedidoService {
             ItemPedido itemPedido = new ItemPedido();
             itemPedido.setProduto(produto);
             itemPedido.setPrecoUnitario(produto.getValorVenda());
+            itemPedido.setQuantidade(itemDTO.quantidade());
             itemPedido.setPedido(novoPedido);
 
             novoPedido.getItens().add(itemPedido);
