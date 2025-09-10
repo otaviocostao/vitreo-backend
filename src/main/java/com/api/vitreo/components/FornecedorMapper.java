@@ -3,9 +3,15 @@ package com.api.vitreo.components;
 import com.api.vitreo.dto.EnderecoDTO;
 import com.api.vitreo.dto.fornecedor.FornecedorRequestDTO;
 import com.api.vitreo.dto.fornecedor.FornecedorResponseDTO;
+import com.api.vitreo.dto.marca.MarcaResponseDTO;
 import com.api.vitreo.entity.Endereco;
 import com.api.vitreo.entity.Fornecedor;
+import com.api.vitreo.entity.Marca;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class FornecedorMapper {
@@ -22,13 +28,18 @@ public class FornecedorMapper {
         fornecedor.setEmail(fornecedorRequest.email());
         fornecedor.setTelefone(fornecedorRequest.telefone());
 
-        if(fornecedorRequest.endereco() != null) {
+        if (fornecedorRequest.endereco() != null) {
             fornecedor.setEndereco(toEnderecoEntity(fornecedorRequest.endereco()));
         }
         return fornecedor;
     }
 
     public FornecedorResponseDTO toResponseDTO(Fornecedor fornecedor) {
+        Set<MarcaResponseDTO> marcasDTOs = fornecedor.getMarcasTrabalhadas() != null
+                ? fornecedor.getMarcasTrabalhadas().stream()
+                .map(this::toMarcaResponseDTO)
+                .collect(Collectors.toSet())
+                : Collections.emptySet();
 
         return new FornecedorResponseDTO(
                 fornecedor.getId(),
@@ -38,8 +49,9 @@ public class FornecedorMapper {
                 fornecedor.getInscricaoEstadual(),
                 fornecedor.getTelefone(),
                 fornecedor.getEmail(),
-                (fornecedor.getEndereco() != null) ? toEnderecoDTO(fornecedor.getEndereco()) : null
-        );
+                (fornecedor.getEndereco() != null) ? toEnderecoDTO(fornecedor.getEndereco()) : null,
+                marcasDTOs
+                );
     }
 
     private Endereco toEnderecoEntity(EnderecoDTO dto) {
@@ -78,5 +90,9 @@ public class FornecedorMapper {
         entity.setCidade(dto.cidade());
         entity.setEstado(dto.estado());
         entity.setCep(dto.cep());
+    }
+
+    private MarcaResponseDTO toMarcaResponseDTO(Marca marca) {
+        return new MarcaResponseDTO(marca.getId(), marca.getNome());
     }
 }
