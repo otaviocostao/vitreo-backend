@@ -4,7 +4,11 @@ import com.api.vitreo.components.FornecedorMapper;
 import com.api.vitreo.dto.fornecedor.FornecedorRequestDTO;
 import com.api.vitreo.dto.fornecedor.FornecedorResponseDTO;
 import com.api.vitreo.entity.Fornecedor;
+import com.api.vitreo.entity.Marca;
+import com.api.vitreo.exception.BusinessException;
+import com.api.vitreo.exception.ResourceNotFoundException;
 import com.api.vitreo.repository.FornecedorRepository;
+import com.api.vitreo.repository.MarcaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +26,9 @@ public class FornecedorService {
 
     @Autowired
     private FornecedorMapper fornecedorMapper;
+
+    @Autowired
+    private MarcaRepository marcaRepository;
 
     @Transactional
     public FornecedorResponseDTO saveFornecedor(FornecedorRequestDTO fornecedorRequest) {
@@ -61,6 +68,25 @@ public class FornecedorService {
         if (fornecedorRequest.endereco() != null) {
             fornecedorMapper.updateEnderecoFromDto(fornecedorExistente.getEndereco(), fornecedorRequest.endereco());
         }
+        Fornecedor fornecedorSalvo = fornecedorRepository.save(fornecedorExistente);
+
+        return fornecedorMapper.toResponseDTO(fornecedorSalvo);
+    }
+
+    @Transactional
+    public FornecedorResponseDTO associateMarcaToFornecedor(UUID fornecedorId, UUID marcaId) {
+        Fornecedor fornecedorExistente = fornecedorRepository.findById(fornecedorId).orElseThrow(() ->
+                new ResourceNotFoundException("Fornecedor not found with id: " + fornecedorId));
+
+        Marca marcaExistente = marcaRepository.findById(marcaId).orElseThrow(() ->
+                new ResourceNotFoundException("Marca not found with id: " + marcaId));
+
+        if (fornecedorExistente.getMarcasTrabalhadas().contains(marcaExistente)) {
+            throw new BusinessException("A marca '" + marcaExistente.getNome() + " já está associada a este fornecedor.");
+        }
+
+        fornecedorExistente.getMarcasTrabalhadas().add(marcaExistente);
+
         Fornecedor fornecedorSalvo = fornecedorRepository.save(fornecedorExistente);
 
         return fornecedorMapper.toResponseDTO(fornecedorSalvo);
