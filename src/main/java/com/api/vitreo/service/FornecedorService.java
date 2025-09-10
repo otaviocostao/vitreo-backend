@@ -91,4 +91,21 @@ public class FornecedorService {
 
         return fornecedorMapper.toResponseDTO(fornecedorSalvo);
     }
+
+    @Transactional
+    public void dissociateMarcaFromFornecedor(UUID fornecedorId, UUID marcaId) {
+        Fornecedor fornecedorExistente = fornecedorRepository.findById(fornecedorId).orElseThrow(() ->
+                new ResourceNotFoundException("Fornecedor not found with id: " + fornecedorId));
+
+        Marca marcaExistente = marcaRepository.findById(marcaId).orElseThrow(() ->
+                new ResourceNotFoundException("Marca not found with id: " + marcaId));
+
+        if (!fornecedorExistente.getMarcasTrabalhadas().contains(marcaExistente)) {
+            throw new BusinessException("A marca '" + marcaExistente.getNome() + " não está associada a este fornecedor.");
+        }
+
+        fornecedorExistente.getMarcasTrabalhadas().remove(marcaExistente);
+
+        fornecedorRepository.save(fornecedorExistente);
+    }
 }
