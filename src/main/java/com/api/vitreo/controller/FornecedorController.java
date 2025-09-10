@@ -68,4 +68,12 @@ public class FornecedorController {
         FornecedorResponseDTO fornecedor = fornecedorService.associateMarcaToFornecedor(fornecedorId, marcaId);
         return ResponseEntity.ok(fornecedor);
     }
+
+    @DeleteMapping("/{fornecedorId}/marcas/{marcaId}")
+    public ResponseEntity<Void> dissociateMarcaFromFornecedor(
+            @PathVariable UUID fornecedorId,
+            @PathVariable UUID marcaId) {
+        fornecedorService.dissociateMarcaFromFornecedor(fornecedorId, marcaId);
+        return ResponseEntity.noContent().build();
+    }
 }
