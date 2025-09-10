@@ -60,4 +60,12 @@ public class FornecedorController {
         FornecedorResponseDTO fornecedor = fornecedorService.update(id, requestDTO);
         return ResponseEntity.ok(fornecedor);
     }
+
+    @PostMapping("/{fornecedorId}/marcas/{marcaId}")
+    public ResponseEntity<FornecedorResponseDTO> associateMarcaToFornecedor(
+            @PathVariable UUID fornecedorId,
+            @PathVariable UUID marcaId) {
+        FornecedorResponseDTO fornecedor = fornecedorService.associateMarcaToFornecedor(fornecedorId, marcaId);
+        return ResponseEntity.ok(fornecedor);
+    }
 }
