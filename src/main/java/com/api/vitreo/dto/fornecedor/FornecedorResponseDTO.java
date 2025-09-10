@@ -1,7 +1,9 @@
 package com.api.vitreo.dto.fornecedor;
 
 import com.api.vitreo.dto.EnderecoDTO;
+import com.api.vitreo.dto.marca.MarcaResponseDTO;
 
+import java.util.Set;
 import java.util.UUID;
 
 public record FornecedorResponseDTO(
@@ -12,6 +14,7 @@ public record FornecedorResponseDTO(
     String inscricaoEstadual,
     String telefone,
     String email,
-    EnderecoDTO endereco
+    EnderecoDTO endereco,
+    Set<MarcaResponseDTO> marcasTrabalhadas
 ) {
 }
