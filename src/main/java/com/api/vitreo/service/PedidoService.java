@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,7 +45,7 @@ public class PedidoService {
     public PedidoResponseDTO create(PedidoRequestDTO pedidoRequestDTO) {
 
         Cliente cliente = clienteRepository.findById((pedidoRequestDTO.clienteId()))
-                .orElseThrow(() -> new NoSuchElementException("Cliente não encontrado com o id: " + pedidoRequestDTO.clienteId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o id: " + pedidoRequestDTO.clienteId()));
 
         Pedido novoPedido = new Pedido();
 
@@ -58,7 +57,7 @@ public class PedidoService {
 
         for(ItemPedidoRequestDTO itemDTO: pedidoRequestDTO.itens()){
             Produto produto = produtoRepository.findById(itemDTO.produtoId())
-                    .orElseThrow(() -> new NoSuchElementException("Produto não encontrado com o id: " + itemDTO.produtoId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com o id: " + itemDTO.produtoId()));
 
             // Lógica de quantidade no estoque (comentada por enquanto)
             /*
@@ -93,7 +92,7 @@ public class PedidoService {
     @Transactional
     public PedidoResponseDTO findById(UUID id) {
         Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Pedido não encontrado com o id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado com o id: " + id));
 
         return pedidoMapper.toResponseDTO(pedido);
     }
@@ -110,7 +109,7 @@ public class PedidoService {
     @Transactional
     public Page<PedidoResponseDTO> findAllByClienteId(UUID clienteId, Pageable pageable) {
         if (!clienteRepository.existsById(clienteId)) {
-            throw new NoSuchElementException("Cliente não encontrado com o id: " + clienteId);
+            throw new ResourceNotFoundException("Cliente não encontrado com o id: " + clienteId);
         }
 
         Page<Pedido> pedidosEntity = pedidoRepository.findAllByClienteId(clienteId, pageable);
@@ -123,10 +122,10 @@ public class PedidoService {
     public PedidoResponseDTO updateStatus(UUID id, PedidoStatus novoStatus) {
 
         Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Pedido não encontrado com o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado com o ID: " + id));
 
         if (pedido.getStatus() == PedidoStatus.ENTREGUE || pedido.getStatus() == PedidoStatus.CANCELADO) {
-            throw new IllegalArgumentException("Não é possível alterar o status de um pedido que já foi entregue ou cancelado.");
+            throw new BusinessException("Não é possível alterar o status de um pedido que já foi entregue ou cancelado.");
         }
 
         pedido.setStatus(novoStatus);
@@ -159,10 +158,10 @@ public class PedidoService {
     public PedidoResponseDTO update(UUID id, PedidoUpdateRequestDTO dto) {
 
         Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Pedido não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado"));
 
         if (pedido.getStatus() == PedidoStatus.ENTREGUE || pedido.getStatus() == PedidoStatus.CANCELADO) {
-            throw new IllegalArgumentException("Pedidos entregues ou cancelados não podem ser atualizados.");
+            throw new BusinessException("Pedidos entregues ou cancelados não podem ser atualizados.");
         }
 
         pedido.getItens().clear();
@@ -170,7 +169,7 @@ public class PedidoService {
 
         for (ItemPedidoRequestDTO itemDto : dto.itens()) {
             Produto produto = produtoRepository.findById(itemDto.produtoId())
-                    .orElseThrow(() -> new NoSuchElementException("Produto não encontrado"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
 
             ItemPedido itemPedido = new ItemPedido();
             pedido.getItens().add(itemPedido);

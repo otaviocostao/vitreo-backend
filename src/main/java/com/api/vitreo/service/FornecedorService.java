@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -41,7 +40,7 @@ public class FornecedorService {
 
     @Transactional
     public FornecedorResponseDTO findById(UUID id, FornecedorRequestDTO requestDTO) {
-        Fornecedor fornecedorEntity = fornecedorRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Fornecedor not found with id: " + id));
+        Fornecedor fornecedorEntity = fornecedorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Fornecedor not found with id: " + id));
         return fornecedorMapper.toResponseDTO(fornecedorEntity);
     }
 
@@ -57,7 +56,7 @@ public class FornecedorService {
 
     @Transactional
     public FornecedorResponseDTO update(UUID id, FornecedorRequestDTO fornecedorRequest) {
-        Fornecedor fornecedorExistente = fornecedorRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Fornecedor not found with id: " + id));
+        Fornecedor fornecedorExistente = fornecedorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Fornecedor not found with id: " + id));
 
         fornecedorExistente.setRazaoSocial(fornecedorRequest.razaoSocial());
         fornecedorExistente.setNomeFantasia(fornecedorRequest.nomeFantasia());

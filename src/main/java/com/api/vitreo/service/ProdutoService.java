@@ -5,6 +5,8 @@ import com.api.vitreo.dto.produto.ProdutoRequestDTO;
 import com.api.vitreo.dto.produto.ProdutoResponseDTO;
 import com.api.vitreo.entity.*;
 import com.api.vitreo.enums.TipoProduto;
+import com.api.vitreo.exception.BusinessException;
+import com.api.vitreo.exception.ResourceNotFoundException;
 import com.api.vitreo.repository.FornecedorRepository;
 import com.api.vitreo.repository.MarcaRepository;
 import com.api.vitreo.repository.ProdutoRepository;
@@ -13,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -35,12 +36,12 @@ public class ProdutoService {
     public ProdutoResponseDTO create(ProdutoRequestDTO produtoRequestDTO) {
 
         Fornecedor fornecedor = fornecedorRepository.findById(produtoRequestDTO.fornecedorId())
-                .orElseThrow(() -> new NoSuchElementException("Fornecedor não encontrado com o id: " + produtoRequestDTO.fornecedorId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Fornecedor não encontrado com o id: " + produtoRequestDTO.fornecedorId()));
 
         Marca marca = null;
         if (produtoRequestDTO.marcaId() != null) {
             marca = marcaRepository.findById(produtoRequestDTO.marcaId())
-                    .orElseThrow(() -> new NoSuchElementException("Marca não encontrada"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Marca não encontrada"));
         }
 
         Produto novoProduto;
@@ -60,7 +61,7 @@ public class ProdutoService {
                 novoProduto = lente;
                 break;
             default:
-                throw new IllegalArgumentException("Tipo de produto inválido: " + produtoRequestDTO.tipoProduto());
+                throw new BusinessException("Tipo de produto inválido: " + produtoRequestDTO.tipoProduto());
         }
 
         populateCommonFields(novoProduto, produtoRequestDTO, fornecedor, marca);
@@ -74,7 +75,7 @@ public class ProdutoService {
     @Transactional
     public ProdutoResponseDTO findById(UUID id){
         Produto produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Produto não encontrado com o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com o ID: " + id));
 
         return produtoMapper.toResponseDTO(produto);
     }
@@ -88,7 +89,7 @@ public class ProdutoService {
     @Transactional
     public void delete(UUID id) {
         Produto produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Produto não encontrado com o id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com o id: " + id));
         produto.setAtivo(false);
         produtoRepository.save(produto);
     }
@@ -96,22 +97,22 @@ public class ProdutoService {
     @Transactional
     public ProdutoResponseDTO update(UUID id, ProdutoRequestDTO produtoRequestDTO) {
         Produto produtoExistente = produtoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Produto não encontrado com o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com o ID: " + id));
 
         if (produtoExistente instanceof Armacao && produtoRequestDTO.tipoProduto() != TipoProduto.ARMACAO) {
-            throw new IllegalArgumentException("Não é possível alterar o tipo de um produto de Armação para " + produtoRequestDTO.tipoProduto());
+            throw new BusinessException("Não é possível alterar o tipo de um produto de Armação para " + produtoRequestDTO.tipoProduto());
         }
         if (produtoExistente instanceof Lente && produtoRequestDTO.tipoProduto() != TipoProduto.LENTE) {
-            throw new IllegalArgumentException("Não é possível alterar o tipo de um produto de Lente para " + produtoRequestDTO.tipoProduto());
+            throw new BusinessException("Não é possível alterar o tipo de um produto de Lente para " + produtoRequestDTO.tipoProduto());
         }
 
         Fornecedor fornecedor = fornecedorRepository.findById(produtoRequestDTO.fornecedorId())
-                .orElseThrow(() -> new NoSuchElementException("Fornecedor não encontrado com o id: " + produtoRequestDTO.fornecedorId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Fornecedor não encontrado com o id: " + produtoRequestDTO.fornecedorId()));
 
         Marca marca = null;
         if (produtoRequestDTO.marcaId() != null) {
             marca = marcaRepository.findById(produtoRequestDTO.marcaId())
-                    .orElseThrow(() -> new NoSuchElementException("Marca não encontrada com o id: " + produtoRequestDTO.marcaId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Marca não encontrada com o id: " + produtoRequestDTO.marcaId()));
         }
 
         populateCommonFields(produtoExistente, produtoRequestDTO, fornecedor, marca);

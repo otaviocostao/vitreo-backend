@@ -6,6 +6,7 @@ import com.api.vitreo.dto.receituario.ReceituarioResponseDTO;
 import com.api.vitreo.dto.receituario.ReceituarioUpdateRequestDTO;
 import com.api.vitreo.entity.Cliente;
 import com.api.vitreo.entity.Receituario;
+import com.api.vitreo.exception.ResourceNotFoundException;
 import com.api.vitreo.repository.ClienteRepository;
 import com.api.vitreo.repository.ReceituarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -36,7 +33,7 @@ public class ReceituarioService {
     public ReceituarioResponseDTO create(ReceituarioRequestDTO receituarioRequest) {
 
         Cliente cliente = clienteRepository.findById(receituarioRequest.clienteId())
-                .orElseThrow(() -> new NoSuchElementException("Cliente não encontrado com o id: " + receituarioRequest.clienteId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o id: " + receituarioRequest.clienteId()));
 
         Receituario receituario = receituarioMapper.toEntity(receituarioRequest, cliente);
 
@@ -55,7 +52,7 @@ public class ReceituarioService {
     public ReceituarioResponseDTO findById(UUID id) {
 
         Receituario receituario = receituarioRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Receituario não encontrado com o id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Receituario não encontrado com o id: " + id));
 
         return receituarioMapper.toResponseDTO(receituario);
     }
@@ -64,7 +61,7 @@ public class ReceituarioService {
     @Transactional
     public ReceituarioResponseDTO update(UUID id, ReceituarioUpdateRequestDTO receituarioRequest) {
         Receituario receituario = receituarioRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Receituario não encontrado com o id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Receituario não encontrado com o id: " + id));
 
         receituarioMapper.updateEntityFromDto(receituario, receituarioRequest);
 
@@ -80,7 +77,7 @@ public class ReceituarioService {
     @Transactional
     public Page<ReceituarioResponseDTO> findByClienteId(Pageable pageable, UUID clienteId) {
         Cliente cliente = clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new NoSuchElementException("Cliente não encontrado com o id: " + clienteId));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o id: " + clienteId));
 
         Page<Receituario> receituarioEntity = receituarioRepository.findByClienteId(cliente, pageable);
 

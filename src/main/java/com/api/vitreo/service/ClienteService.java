@@ -4,6 +4,7 @@ import com.api.vitreo.components.ClienteMapper;
 import com.api.vitreo.dto.cliente.ClienteRequestDTO;
 import com.api.vitreo.dto.cliente.ClienteResponseDTO;
 import com.api.vitreo.entity.Cliente;
+import com.api.vitreo.exception.ResourceNotFoundException;
 import com.api.vitreo.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -39,7 +39,7 @@ public class ClienteService {
 
     @Transactional
     public ClienteResponseDTO findById(UUID id) {
-        Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Cliente with id " + id + " does not exist."));
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Cliente with id " + id + " does not exist."));
 
         ClienteResponseDTO clienteDto = clienteMapper.toResponseDTO(cliente);
 
@@ -70,7 +70,7 @@ public class ClienteService {
     public ClienteResponseDTO update(UUID id, ClienteRequestDTO clienteRequest) {
 
         Cliente clienteExistente = clienteRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Cliente não encontrado com o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o ID: " + id));
 
         clienteExistente.setNome(clienteRequest.nome());
         clienteExistente.setSobrenome(clienteRequest.sobrenome());
