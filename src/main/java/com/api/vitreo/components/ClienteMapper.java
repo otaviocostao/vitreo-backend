@@ -33,6 +33,7 @@ public class ClienteMapper {
     public ClienteResponseDTO toResponseDTO(Cliente cliente){
         return new ClienteResponseDTO(
                 cliente.getId(),
+                cliente.getNomeCompleto(),
                 cliente.getNome(),
                 cliente.getSobrenome(),
                 cliente.getCpf(),
