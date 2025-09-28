@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public record ClienteResponseDTO(UUID id,
+                                 String nomeCompleto,
                                  String nome,
                                  String sobrenome,
                                  String cpf,
