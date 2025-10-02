@@ -26,6 +26,8 @@ public class ProdutoMapper {
         return new ArmacaoResponseDTO(
                 armacao.getId(),
                 armacao.getNome(),
+                armacao.getCusto(),
+                armacao.getMargemLucroPercentual(),
                 armacao.getValorVenda(),
                 armacao.getQuantidadeEstoque(),
                 armacao.getMarca() != null ? armacao.getMarca().getNome() : null,

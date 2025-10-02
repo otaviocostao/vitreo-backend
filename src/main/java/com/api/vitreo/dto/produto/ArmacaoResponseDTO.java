@@ -7,6 +7,8 @@ public record ArmacaoResponseDTO(
 
         UUID id,
         String nome,
+        BigDecimal custo,
+        BigDecimal margemLucroPercentual,
         BigDecimal valorVenda,
         Integer quantidadeEstoque,
         String nomeMarca,
