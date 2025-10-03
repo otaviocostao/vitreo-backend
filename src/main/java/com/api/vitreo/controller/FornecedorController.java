@@ -34,9 +34,8 @@ public class FornecedorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FornecedorResponseDTO> findById(@RequestParam UUID id,
-                                                          @RequestBody FornecedorRequestDTO requestDTO) {
-        FornecedorResponseDTO fornecedor = fornecedorService.findById(id, requestDTO);
+    public ResponseEntity<FornecedorResponseDTO> findById(@PathVariable UUID id) {
+        FornecedorResponseDTO fornecedor = fornecedorService.findById(id);
         return ResponseEntity.ok(fornecedor);
     }
 
@@ -55,7 +54,7 @@ public class FornecedorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FornecedorResponseDTO> update(@RequestParam("id") UUID id,
+    public ResponseEntity<FornecedorResponseDTO> update(@PathVariable UUID id,
                                                         @Valid @RequestBody FornecedorRequestDTO requestDTO) {
         FornecedorResponseDTO fornecedor = fornecedorService.update(id, requestDTO);
         return ResponseEntity.ok(fornecedor);

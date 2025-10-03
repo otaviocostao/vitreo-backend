@@ -39,7 +39,7 @@ public class FornecedorService {
     }
 
     @Transactional
-    public FornecedorResponseDTO findById(UUID id, FornecedorRequestDTO requestDTO) {
+    public FornecedorResponseDTO findById(UUID id) {
         Fornecedor fornecedorEntity = fornecedorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Fornecedor not found with id: " + id));
         return fornecedorMapper.toResponseDTO(fornecedorEntity);
     }
