@@ -42,6 +42,8 @@ public class ProdutoMapper {
         return new LenteResponseDTO(
                 lente.getId(),
                 lente.getNome(),
+                lente.getCusto(),
+                lente.getMargemLucroPercentual(),
                 lente.getValorVenda(),
                 lente.getQuantidadeEstoque(),
                 lente.getMarca() != null ? lente.getMarca().getNome() : null,

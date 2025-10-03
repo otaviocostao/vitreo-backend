@@ -7,6 +7,8 @@ public record LenteResponseDTO(
 
         UUID id,
         String nome,
+        BigDecimal custo,
+        BigDecimal margemLucroPercentual,
         BigDecimal valorVenda,
         Integer quantidadeEstoque,
         String nomeMarca,
