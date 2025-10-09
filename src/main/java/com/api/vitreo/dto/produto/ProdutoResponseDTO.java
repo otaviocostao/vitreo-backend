@@ -1,5 +1,7 @@
 package com.api.vitreo.dto.produto;
 
+import com.api.vitreo.dto.fornecedor.FornecedorSimplificadoDTO;
+import com.api.vitreo.dto.marca.MarcaSimplificadaDTO;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -21,6 +23,6 @@ public sealed interface ProdutoResponseDTO permits ArmacaoResponseDTO, LenteResp
     String nome();
     BigDecimal valorVenda();
     Integer quantidadeEstoque();
-    String nomeMarca();
-    String nomeFornecedor();
+    MarcaSimplificadaDTO marca();
+    FornecedorSimplificadoDTO fornecedor();
 }
