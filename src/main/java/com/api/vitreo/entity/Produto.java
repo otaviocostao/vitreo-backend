@@ -36,14 +36,13 @@ public abstract class Produto {
     @JoinColumn(name = "marca_id")
     private Marca marca;
 
-    @Column(unique = true)
     private String codigoBarras;
 
     @Column(precision = 10, scale = 2)
     private BigDecimal custo;
 
-    @Column(precision = 5, scale = 2)
-    private BigDecimal margemLucroPercentual;
+    @Column(precision = 10, scale = 2)
+    private BigDecimal valorVenda;
 
     private Integer quantidadeEstoque;
 
@@ -51,11 +50,15 @@ public abstract class Produto {
     private boolean ativo = true;
 
     @Transient
-    public BigDecimal getValorVenda() {
-        if (this.custo == null || this.margemLucroPercentual == null) {
+    public BigDecimal getMargemLucro() {
+        if (this.custo == null || this.valorVenda == null) {
             return BigDecimal.ZERO;
         }
-        BigDecimal fator = BigDecimal.ONE.add(this.margemLucroPercentual.divide(new BigDecimal("100")));
-        return this.custo.multiply(fator).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal lucro = this.valorVenda.subtract(this.custo);
+        BigDecimal proporcaoLucro = lucro.divide(this.custo, 4, RoundingMode.HALF_UP);
+        BigDecimal margemPercentual = proporcaoLucro.multiply(new BigDecimal("100"));
+
+        return margemPercentual.setScale(2, RoundingMode.HALF_UP);
+
     }
 }
