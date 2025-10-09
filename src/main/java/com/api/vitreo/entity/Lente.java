@@ -14,8 +14,8 @@ import java.math.BigDecimal;
 @Setter
 public class Lente extends Produto {
 
-    @Column(precision = 4, scale = 2)
-    private BigDecimal indiceRefracao;
+    @Column(length = 50)
+    private String materialLente;
 
     @Column(length = 100)
     private String tratamento;
