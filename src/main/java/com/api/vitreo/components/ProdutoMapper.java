@@ -1,5 +1,7 @@
 package com.api.vitreo.components;
 
+import com.api.vitreo.dto.fornecedor.FornecedorSimplificadoDTO;
+import com.api.vitreo.dto.marca.MarcaSimplificadaDTO;
 import com.api.vitreo.dto.produto.ArmacaoResponseDTO;
 import com.api.vitreo.dto.produto.LenteResponseDTO;
 import com.api.vitreo.dto.produto.ProdutoResponseDTO;
@@ -23,15 +25,24 @@ public class ProdutoMapper {
     }
 
     private ArmacaoResponseDTO toArmacaoResponseDTO(Armacao armacao) {
+        FornecedorSimplificadoDTO fornecedorDTO = new FornecedorSimplificadoDTO(
+                armacao.getFornecedor().getId(),
+                armacao.getFornecedor().getRazaoSocial()
+        );
+        MarcaSimplificadaDTO marcaDTO = armacao.getMarca() != null
+                ? new MarcaSimplificadaDTO(armacao.getMarca().getId(), armacao.getMarca().getNome())
+                : null;
         return new ArmacaoResponseDTO(
                 armacao.getId(),
                 armacao.getNome(),
+                armacao.getReferencia(),
+                armacao.getCodigoBarras(),
                 armacao.getCusto(),
-                armacao.getMargemLucroPercentual(),
+                armacao.getMargemLucro(),
                 armacao.getValorVenda(),
                 armacao.getQuantidadeEstoque(),
-                armacao.getMarca() != null ? armacao.getMarca().getNome() : null,
-                armacao.getFornecedor().getRazaoSocial(),
+                marcaDTO,
+                fornecedorDTO,
                 armacao.getCor(),
                 armacao.getMaterial(),
                 armacao.getTamanho()
@@ -39,16 +50,26 @@ public class ProdutoMapper {
     }
 
     private LenteResponseDTO toLenteResponseDTO(Lente lente) {
+        FornecedorSimplificadoDTO fornecedorDTO = new FornecedorSimplificadoDTO(
+                lente.getFornecedor().getId(),
+                lente.getFornecedor().getRazaoSocial()
+        );
+        MarcaSimplificadaDTO marcaDTO = lente.getMarca() != null
+                ? new MarcaSimplificadaDTO(lente.getMarca().getId(), lente.getMarca().getNome())
+                : null;
+
         return new LenteResponseDTO(
                 lente.getId(),
                 lente.getNome(),
+                lente.getReferencia(),
+                lente.getCodigoBarras(),
                 lente.getCusto(),
-                lente.getMargemLucroPercentual(),
+                lente.getMargemLucro(),
                 lente.getValorVenda(),
                 lente.getQuantidadeEstoque(),
-                lente.getMarca() != null ? lente.getMarca().getNome() : null,
-                lente.getFornecedor().getRazaoSocial(),
-                lente.getIndiceRefracao(),
+                marcaDTO,
+                fornecedorDTO,
+                lente.getMaterialLente(),
                 lente.getTratamento(),
                 lente.getTipoLente()
         );
