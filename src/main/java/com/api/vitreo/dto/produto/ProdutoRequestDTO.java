@@ -17,7 +17,7 @@ public record ProdutoRequestDTO(
         String referencia,
         String codigoBarras,
         BigDecimal custo,
-        BigDecimal margemLucroPercentual,
+        BigDecimal valorVenda,
         @NotNull Integer quantidadeEstoque,
         Boolean ativo,
 
@@ -25,7 +25,7 @@ public record ProdutoRequestDTO(
         String material,
         String tamanho,
 
-        BigDecimal indiceRefracao,
+        String materialLente,
         String tratamento,
         String tipoLente
 ) {}
