@@ -57,7 +57,7 @@ public class ProdutoService {
                 Lente lente = new Lente();
                 lente.setTipoLente(produtoRequestDTO.tipoLente());
                 lente.setTratamento(produtoRequestDTO.tratamento());
-                lente.setIndiceRefracao(produtoRequestDTO.indiceRefracao());
+                lente.setMaterialLente(produtoRequestDTO.materialLente());
                 novoProduto = lente;
                 break;
             default:
@@ -127,7 +127,7 @@ public class ProdutoService {
                 break;
             case LENTE:
                 if (produtoExistente instanceof Lente lente) {
-                    lente.setIndiceRefracao(produtoRequestDTO.indiceRefracao());
+                    lente.setMaterialLente(produtoRequestDTO.materialLente());
                     lente.setTratamento(produtoRequestDTO.tratamento());
                     lente.setTipoLente(produtoRequestDTO.tipoLente());
                 }
@@ -146,7 +146,7 @@ public class ProdutoService {
             produto.setReferencia(produtoRequestDTO.referencia());
             produto.setCodigoBarras(produtoRequestDTO.codigoBarras());
             produto.setCusto(produtoRequestDTO.custo());
-            produto.setMargemLucroPercentual(produtoRequestDTO.margemLucroPercentual());
+            produto.setValorVenda(produtoRequestDTO.valorVenda());
             produto.setQuantidadeEstoque(produtoRequestDTO.quantidadeEstoque());
             if (produtoRequestDTO.ativo() != null) {
                 produto.setAtivo(produtoRequestDTO.ativo());
