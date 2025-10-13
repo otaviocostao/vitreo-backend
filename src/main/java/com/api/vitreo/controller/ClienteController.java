@@ -43,18 +43,18 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClienteResponseDTO> findById(@RequestParam("id") UUID id){
+    public ResponseEntity<ClienteResponseDTO> findById(@PathVariable("id") UUID id){
         ClienteResponseDTO cliente = clienteService.findById(id);
         return ResponseEntity.ok(cliente);
     }
 
     @DeleteMapping
-    public void deleteById(@RequestParam("id") UUID id){
+    public void deleteById(@PathVariable("id") UUID id){
         clienteService.deleteById(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClienteResponseDTO> update(@RequestParam UUID id, @Valid @RequestBody ClienteRequestDTO clienteRequest) {
+    public ResponseEntity<ClienteResponseDTO> update(@PathVariable UUID id, @Valid @RequestBody ClienteRequestDTO clienteRequest) {
         ClienteResponseDTO clienteAtualizado = clienteService.update(id, clienteRequest);
         return ResponseEntity.ok(clienteAtualizado);
     }
