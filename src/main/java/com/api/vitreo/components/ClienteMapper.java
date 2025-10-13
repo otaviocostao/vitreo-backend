@@ -19,7 +19,12 @@ public class ClienteMapper {
         cliente.setNome(clienteRequestDTO.nome());
         cliente.setSobrenome(clienteRequestDTO.sobrenome());
         cliente.setCpf(clienteRequestDTO.cpf());
+        cliente.setRg(clienteRequestDTO.rg());
         cliente.setTelefone(clienteRequestDTO.telefone());
+        cliente.setTelefoneSecundario(clienteRequestDTO.telefoneSecundario());
+        cliente.setGenero(clienteRequestDTO.genero());
+        cliente.setNaturalidade(clienteRequestDTO.naturalidade());
+        cliente.setObservacoes(clienteRequestDTO.observacoes());
         cliente.setEmail(clienteRequestDTO.email());
         cliente.setDataNascimento(clienteRequestDTO.dataNascimento());
 
@@ -37,9 +42,14 @@ public class ClienteMapper {
                 cliente.getNome(),
                 cliente.getSobrenome(),
                 cliente.getCpf(),
+                cliente.getRg(),
+                cliente.getGenero(),
+                cliente.getNaturalidade(),
                 cliente.getTelefone(),
+                cliente.getTelefoneSecundario(),
                 cliente.getEmail(),
                 cliente.getDataNascimento(),
+                cliente.getObservacoes(),
                 (cliente.getEndereco() != null) ? toEnderecoDTO(cliente.getEndereco()) : null
         );
     }
