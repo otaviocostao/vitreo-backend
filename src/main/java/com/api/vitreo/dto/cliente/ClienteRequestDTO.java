@@ -23,9 +23,20 @@ public record ClienteRequestDTO(
     @CPF(message = "O CPF informado é inválido")
     String cpf,
 
+    String rg,
+
+    String genero,
+
+    String naturalidade,
+
     String telefone,
+
+    String telefoneSecundario,
 
     LocalDate dataNascimento,
 
+    String observacoes,
+
     EnderecoDTO endereco
+
     ) {}

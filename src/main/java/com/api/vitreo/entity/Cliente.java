@@ -38,13 +38,25 @@ public class Cliente {
     @Column(length = 20)
     private String telefone;
 
+    @Column(length = 20)
+    private String telefoneSecundario;
+
     @Embedded
     private Endereco endereco;
 
     @Column(length = 20)
     private String cpf;
 
+    @Column(length = 20)
+    private String rg;
+
     private LocalDate dataNascimento;
+
+    private String genero;
+
+    private String naturalidade;
+
+    private String observacoes;
 
     @Column(updatable = false)
     private LocalDateTime dataCadastro;

@@ -10,8 +10,13 @@ public record ClienteResponseDTO(UUID id,
                                  String nome,
                                  String sobrenome,
                                  String cpf,
+                                 String rg,
+                                 String genero,
+                                 String naturalidade,
                                  String telefone,
+                                 String telefoneSecundario,
                                  String email,
                                  LocalDate dataNascimento,
-                                 EnderecoDTO endereco) {
+                                 String observacoes,
+                                 EnderecoDTO endereco){
 }
