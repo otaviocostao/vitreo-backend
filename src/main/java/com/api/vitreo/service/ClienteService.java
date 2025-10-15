@@ -74,8 +74,14 @@ public class ClienteService {
 
         clienteExistente.setNome(clienteRequest.nome());
         clienteExistente.setSobrenome(clienteRequest.sobrenome());
+        clienteExistente.setNomeCompleto(clienteRequest.nome() + " " + clienteRequest.sobrenome());
         clienteExistente.setCpf(clienteRequest.cpf());
+        clienteExistente.setRg(clienteRequest.rg());
         clienteExistente.setTelefone(clienteRequest.telefone());
+        clienteExistente.setTelefoneSecundario(clienteRequest.telefoneSecundario());
+        clienteExistente.setGenero(clienteRequest.genero());
+        clienteExistente.setNaturalidade(clienteRequest.naturalidade());
+        clienteExistente.setObservacoes(clienteRequest.observacoes());
         clienteExistente.setEmail(clienteRequest.email());
         clienteExistente.setDataNascimento(clienteRequest.dataNascimento());
         if (clienteRequest.endereco() != null) {
