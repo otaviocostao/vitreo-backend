@@ -23,7 +23,7 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @PostMapping
-    public ResponseEntity<ClienteResponseDTO> save(@RequestBody ClienteRequestDTO clienteRequestDTO) {
+    public ResponseEntity<ClienteResponseDTO> save(@Valid @RequestBody ClienteRequestDTO clienteRequestDTO) {
         ClienteResponseDTO novoCliente = clienteService.save(clienteRequestDTO);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
