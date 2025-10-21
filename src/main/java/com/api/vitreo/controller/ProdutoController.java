@@ -2,12 +2,12 @@ package com.api.vitreo.controller;
 
 import com.api.vitreo.dto.produto.ProdutoRequestDTO;
 import com.api.vitreo.dto.produto.ProdutoResponseDTO;
+import com.api.vitreo.enums.TipoProduto;
 import com.api.vitreo.service.ProdutoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -41,8 +41,14 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProdutoResponseDTO>> findAll(@PageableDefault(size = 20, page = 0)Pageable pageable){
-        Page<ProdutoResponseDTO> produtos = produtoService.findAll(pageable);
+    public ResponseEntity<Page<ProdutoResponseDTO>> findAll(
+
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) TipoProduto tipo,
+    
+            Pageable pageable) {
+
+        Page<ProdutoResponseDTO> produtos = produtoService.findAll(nome, tipo, pageable);
         return ResponseEntity.ok(produtos);
     }
 

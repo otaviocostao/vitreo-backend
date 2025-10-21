@@ -10,9 +10,11 @@ import com.api.vitreo.exception.ResourceNotFoundException;
 import com.api.vitreo.repository.FornecedorRepository;
 import com.api.vitreo.repository.MarcaRepository;
 import com.api.vitreo.repository.ProdutoRepository;
+import com.api.vitreo.repository.ProdutoSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
@@ -80,10 +82,12 @@ public class ProdutoService {
         return produtoMapper.toResponseDTO(produto);
     }
 
-    @Transactional
-    public Page<ProdutoResponseDTO> findAll(Pageable pageable){
-        Page<Produto> produtos = produtoRepository.findAll(pageable);
-        return produtos.map(produtoMapper::toResponseDTO);
+    @Transactional(readOnly = true)
+    public Page<ProdutoResponseDTO> findAll(String nome, TipoProduto tipo, Pageable pageable){
+        Specification<Produto> spec = ProdutoSpecification.comFiltros(nome, tipo);
+        Page<Produto> produtosPage = produtoRepository.findAll(spec, pageable);
+
+        return produtosPage.map(produtoMapper::toResponseDTO);
     }
 
     @Transactional
