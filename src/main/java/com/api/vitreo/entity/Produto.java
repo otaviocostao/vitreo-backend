@@ -27,6 +27,9 @@ public abstract class Produto {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Fornecedor fornecedor;
 
+    @Column(name = "tipo_produto", insertable = false, updatable = false)
+    private String tipoProduto;
+
     @Column(nullable = false)
     private String nome;
 
