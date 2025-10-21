@@ -21,6 +21,7 @@ import java.util.UUID;
 public sealed interface ProdutoResponseDTO permits ArmacaoResponseDTO, LenteResponseDTO {
     UUID id();
     String nome();
+    String tipoProduto();
     BigDecimal valorVenda();
     Integer quantidadeEstoque();
     MarcaSimplificadaDTO marca();

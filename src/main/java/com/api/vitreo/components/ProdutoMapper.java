@@ -35,6 +35,7 @@ public class ProdutoMapper {
         return new ArmacaoResponseDTO(
                 armacao.getId(),
                 armacao.getNome(),
+                armacao.getTipoProduto(),
                 armacao.getReferencia(),
                 armacao.getCodigoBarras(),
                 armacao.getCusto(),
@@ -61,6 +62,7 @@ public class ProdutoMapper {
         return new LenteResponseDTO(
                 lente.getId(),
                 lente.getNome(),
+                lente.getTipoProduto(),
                 lente.getReferencia(),
                 lente.getCodigoBarras(),
                 lente.getCusto(),

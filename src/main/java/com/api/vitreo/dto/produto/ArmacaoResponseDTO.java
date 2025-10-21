@@ -10,6 +10,7 @@ public record ArmacaoResponseDTO(
 
         UUID id,
         String nome,
+        String tipoProduto,
         String referencia,
         String codigoBarras,
         BigDecimal custo,
