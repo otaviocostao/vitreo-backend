@@ -1,20 +1,19 @@
 package com.api.vitreo.service;
 
 import com.api.vitreo.components.PedidoMapper;
+import com.api.vitreo.dto.pagamento.PagamentoRequestDTO;
 import com.api.vitreo.dto.pedido.ItemPedidoRequestDTO;
 import com.api.vitreo.dto.pedido.PedidoRequestDTO;
 import com.api.vitreo.dto.pedido.PedidoResponseDTO;
 import com.api.vitreo.dto.pedido.PedidoUpdateRequestDTO;
-import com.api.vitreo.entity.Cliente;
-import com.api.vitreo.entity.ItemPedido;
-import com.api.vitreo.entity.Pedido;
-import com.api.vitreo.entity.Produto;
+import com.api.vitreo.entity.*;
 import com.api.vitreo.enums.PedidoStatus;
 import com.api.vitreo.exception.BusinessException;
 import com.api.vitreo.exception.ResourceNotFoundException;
 import com.api.vitreo.repository.ClienteRepository;
 import com.api.vitreo.repository.PedidoRepository;
 import com.api.vitreo.repository.ProdutoRepository;
+import com.api.vitreo.repository.ReceituarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,33 +38,34 @@ public class PedidoService {
     private ProdutoRepository produtoRepository;
 
     @Autowired
+    private ReceituarioRepository receituarioRepository;
+
+    @Autowired
     private PedidoMapper pedidoMapper;
 
     @Transactional
     public PedidoResponseDTO create(PedidoRequestDTO pedidoRequestDTO) {
 
-        Cliente cliente = clienteRepository.findById((pedidoRequestDTO.clienteId()))
+        Cliente cliente = clienteRepository.findById(pedidoRequestDTO.clienteId())
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o id: " + pedidoRequestDTO.clienteId()));
 
         Pedido novoPedido = new Pedido();
-
         novoPedido.setCliente(cliente);
+
+        Receituario receituario = null;
+        if (pedidoRequestDTO.receituario() != null) {
+            Receituario novoReceituario = new Receituario();
+            novoReceituario.setCliente(cliente);
+            novoPedido.setReceituario(novoReceituario);
+        }
+
         novoPedido.setDataPrevisaoEntrega(pedidoRequestDTO.dataPrevisaoEntrega());
-        novoPedido.setStatus(PedidoStatus.SOLICITADO);
+        novoPedido.setDataPedido(pedidoRequestDTO.dataPedido());
 
         BigDecimal valorTotal = BigDecimal.ZERO;
-
         for(ItemPedidoRequestDTO itemDTO: pedidoRequestDTO.itens()){
             Produto produto = produtoRepository.findById(itemDTO.produtoId())
                     .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com o id: " + itemDTO.produtoId()));
-
-            // Lógica de quantidade no estoque (comentada por enquanto)
-            /*
-            if(produto.getQuantidadeEstoque() < itemDto.quantidade()){
-                 throw new BusinessException("Estoque insuficiente para o produto: " + produto.getNome());
-            }
-            produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() - itemDto.quantidade());
-            */
 
             ItemPedido itemPedido = new ItemPedido();
             itemPedido.setProduto(produto);
@@ -78,11 +78,23 @@ public class PedidoService {
         }
 
         novoPedido.setValorTotal(valorTotal);
-        if(pedidoRequestDTO.desconto() !=null){
-            novoPedido.setDesconto(pedidoRequestDTO.desconto());
-        }
-
+        BigDecimal desconto = pedidoRequestDTO.desconto() != null ? pedidoRequestDTO.desconto() : BigDecimal.ZERO;
+        novoPedido.setDesconto(desconto);
         novoPedido.setValorFinal(novoPedido.getValorTotal().subtract(novoPedido.getDesconto()));
+
+        if (pedidoRequestDTO.pagamentos() != null && !pedidoRequestDTO.pagamentos().isEmpty()) {
+            for (PagamentoRequestDTO pagDto : pedidoRequestDTO.pagamentos()) {
+                Pagamento novoPagamento = new Pagamento();
+                novoPagamento.setFormaPagamento(pagDto.formaPagamento());
+                novoPagamento.setValorPago(pagDto.valorPago());
+                novoPagamento.setNumeroParcelas(pagDto.numeroParcelas() != null ? pagDto.numeroParcelas() : 1);
+
+                novoPagamento.setPedido(novoPedido);
+
+                novoPedido.getPagamentos().add(novoPagamento);
+            }
+        }
+        novoPedido.setStatus(PedidoStatus.SOLICITADO);
 
         Pedido pedidoSalvo = pedidoRepository.save(novoPedido);
 
