@@ -1,5 +1,7 @@
 package com.api.vitreo.dto.pedido;
 
+import com.api.vitreo.dto.pagamento.PagamentoRequestDTO;
+import com.api.vitreo.dto.receituario.ReceituarioRequestDTO;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -11,7 +13,7 @@ import java.util.UUID;
 
 public record PedidoRequestDTO(
         @NotNull UUID clienteId,
-        UUID receituarioId,
+        ReceituarioRequestDTO receituario,
         Integer ordemServico,
         @NotNull @Size(min = 1)
         List<ItemPedidoRequestDTO> itens,
@@ -19,6 +21,8 @@ public record PedidoRequestDTO(
         LocalDateTime dataPedido,
         LocalDate dataPrevisaoEntrega,
         LocalDate dataEntrega,
-        BigDecimal desconto
+        BigDecimal desconto,
+
+        List<PagamentoRequestDTO> pagamentos
 
 ) {}
