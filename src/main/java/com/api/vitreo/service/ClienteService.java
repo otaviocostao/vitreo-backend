@@ -6,9 +6,11 @@ import com.api.vitreo.dto.cliente.ClienteResponseDTO;
 import com.api.vitreo.entity.Cliente;
 import com.api.vitreo.exception.ResourceNotFoundException;
 import com.api.vitreo.repository.ClienteRepository;
+import com.api.vitreo.repository.ClienteSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,10 +48,11 @@ public class ClienteService {
         return clienteDto;
     }
 
-    @Transactional
-    public Page<ClienteResponseDTO> findAll(Pageable pageable) {
+    @Transactional(readOnly = true)
+    public Page<ClienteResponseDTO> findAll(String nome, String cpf, Pageable pageable) {
 
-        Page<Cliente> clientesPage = clienteRepository.findAll(pageable);
+        Specification<Cliente> spec = ClienteSpecification.comFiltros(nome, cpf);
+        Page<Cliente> clientesPage = clienteRepository.findAll(spec, pageable);
 
         return clientesPage.map(clienteMapper::toResponseDTO);
     }

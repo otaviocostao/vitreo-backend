@@ -36,10 +36,12 @@ public class ClienteController {
 
     @GetMapping
     public ResponseEntity<Page<ClienteResponseDTO>> findAll(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String cpf,
             @PageableDefault(size = 10, page = 0) Pageable pageable
     ){
 
-        return ResponseEntity.ok(clienteService.findAll(pageable));
+        return ResponseEntity.ok(clienteService.findAll(nome, cpf, pageable));
     }
 
     @GetMapping("/{id}")
