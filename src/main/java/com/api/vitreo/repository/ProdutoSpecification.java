@@ -19,7 +19,7 @@ public class ProdutoSpecification {
             }
 
             if (tipo != null) {
-                predicates.add(criteriaBuilder.equal(root.get("tipoProduto"), tipo));
+                predicates.add(criteriaBuilder.equal(root.get("tipoProduto"), tipo.name()));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
