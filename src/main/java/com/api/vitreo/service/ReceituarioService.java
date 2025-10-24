@@ -32,10 +32,7 @@ public class ReceituarioService {
     @Transactional
     public ReceituarioResponseDTO create(ReceituarioRequestDTO receituarioRequest) {
 
-        Cliente cliente = clienteRepository.findById(receituarioRequest.clienteId())
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o id: " + receituarioRequest.clienteId()));
-
-        Receituario receituario = receituarioMapper.toEntity(receituarioRequest, cliente);
+        Receituario receituario = receituarioMapper.toEntity(receituarioRequest);
 
         Receituario receituarioSalvo = receituarioRepository.save(receituario);
 

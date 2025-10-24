@@ -3,19 +3,13 @@ package com.api.vitreo.components;
 import com.api.vitreo.dto.receituario.ReceituarioRequestDTO;
 import com.api.vitreo.dto.receituario.ReceituarioResponseDTO;
 import com.api.vitreo.dto.receituario.ReceituarioUpdateRequestDTO;
-import com.api.vitreo.entity.Cliente;
 import com.api.vitreo.entity.Receituario;
-import com.api.vitreo.repository.ClienteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.NoSuchElementException;
 
 @Component
 public class ReceituarioMapper {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
 
     public ReceituarioResponseDTO toResponseDTO(Receituario receituario) {
         return new ReceituarioResponseDTO(
@@ -42,10 +36,8 @@ public class ReceituarioMapper {
         );
     }
 
-    public Receituario toEntity(ReceituarioRequestDTO dto, Cliente cliente) {
+    public Receituario toEntity(ReceituarioRequestDTO dto) {
         Receituario receituario = new Receituario();
-
-        receituario.setCliente(cliente);
         receituario.setEsfericoOd(dto.esfericoOd());
         receituario.setCilindricoOd(dto.cilindricoOd());
         receituario.setEixoOd(dto.eixoOd());
