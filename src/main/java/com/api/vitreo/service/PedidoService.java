@@ -1,6 +1,7 @@
 package com.api.vitreo.service;
 
 import com.api.vitreo.components.PedidoMapper;
+import com.api.vitreo.components.ReceituarioMapper;
 import com.api.vitreo.dto.pagamento.PagamentoRequestDTO;
 import com.api.vitreo.dto.pedido.ItemPedidoRequestDTO;
 import com.api.vitreo.dto.pedido.PedidoRequestDTO;
@@ -43,6 +44,9 @@ public class PedidoService {
     @Autowired
     private PedidoMapper pedidoMapper;
 
+    @Autowired
+    private ReceituarioMapper receituarioMapper;
+
     @Transactional
     public PedidoResponseDTO create(PedidoRequestDTO pedidoRequestDTO) {
 
@@ -52,9 +56,8 @@ public class PedidoService {
         Pedido novoPedido = new Pedido();
         novoPedido.setCliente(cliente);
 
-        Receituario receituario = null;
         if (pedidoRequestDTO.receituario() != null) {
-            Receituario novoReceituario = new Receituario();
+            Receituario novoReceituario = receituarioMapper.toEntity(pedidoRequestDTO.receituario());
             novoReceituario.setCliente(cliente);
             novoPedido.setReceituario(novoReceituario);
         }
