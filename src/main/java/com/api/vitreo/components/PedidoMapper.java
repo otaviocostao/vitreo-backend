@@ -23,16 +23,6 @@ public class PedidoMapper {
                 .map(this::toItemPedidoResponseDTO)
                 .collect(Collectors.toList());
 
-        BigDecimal valorTotalArmacoes = pedido.getItens().stream()
-                .filter(item -> item.getProduto() instanceof Armacao)
-                .map(item -> item.getPrecoUnitario().multiply(new BigDecimal(item.getQuantidade())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal valorTotalLentes = pedido.getItens().stream()
-                .filter(item -> item.getProduto() instanceof Lente)
-                .map(item -> item.getPrecoUnitario().multiply(new BigDecimal(item.getQuantidade())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
         return new PedidoResponseDTO(
                 pedido.getId(),
                 pedido.getOrdemServico(),
@@ -40,8 +30,8 @@ public class PedidoMapper {
                 pedido.getDataPedido(),
                 pedido.getDataPrevisaoEntrega(),
                 pedido.getDataEntrega(),
-                valorTotalArmacoes,
-                valorTotalLentes,
+                pedido.getValorArmacao(),
+                pedido.getValorLentes(),
                 pedido.getValorTotal(),
                 pedido.getDesconto(),
                 pedido.getValorFinal(),

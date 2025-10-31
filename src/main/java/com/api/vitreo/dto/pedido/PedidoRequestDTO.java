@@ -21,7 +21,11 @@ public record PedidoRequestDTO(
         LocalDateTime dataPedido,
         LocalDate dataPrevisaoEntrega,
         LocalDate dataEntrega,
+        BigDecimal valorArmacao,
+        BigDecimal valorLentes,
+        BigDecimal valorTotal,
         BigDecimal desconto,
+        BigDecimal valorFinal,
 
         List<PagamentoRequestDTO> pagamentos
 
