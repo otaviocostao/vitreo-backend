@@ -64,26 +64,44 @@ public class PedidoService {
 
         novoPedido.setDataPrevisaoEntrega(pedidoRequestDTO.dataPrevisaoEntrega());
         novoPedido.setDataPedido(pedidoRequestDTO.dataPedido());
+        novoPedido.setOrdemServico(pedidoRequestDTO.ordemServico());
 
-        BigDecimal valorTotal = BigDecimal.ZERO;
-        for(ItemPedidoRequestDTO itemDTO: pedidoRequestDTO.itens()){
-            Produto produto = produtoRepository.findById(itemDTO.produtoId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com o id: " + itemDTO.produtoId()));
-
-            ItemPedido itemPedido = new ItemPedido();
-            itemPedido.setProduto(produto);
-            itemPedido.setPrecoUnitario(produto.getValorVenda());
-            itemPedido.setQuantidade(itemDTO.quantidade());
-            itemPedido.setPedido(novoPedido);
-
-            novoPedido.getItens().add(itemPedido);
-            valorTotal = valorTotal.add(itemPedido.getPrecoUnitario().multiply(new BigDecimal(itemDTO.quantidade())));
-        }
-
-        novoPedido.setValorTotal(valorTotal);
+        BigDecimal valorLentes = pedidoRequestDTO.valorLentes() != null ? pedidoRequestDTO.valorLentes() : BigDecimal.ZERO;
+        BigDecimal valorArmacao = pedidoRequestDTO.valorArmacao() != null ? pedidoRequestDTO.valorArmacao() : BigDecimal.ZERO;
         BigDecimal desconto = pedidoRequestDTO.desconto() != null ? pedidoRequestDTO.desconto() : BigDecimal.ZERO;
+
+        novoPedido.setValorLentes(valorLentes);
+        novoPedido.setValorArmacao(valorArmacao);
         novoPedido.setDesconto(desconto);
-        novoPedido.setValorFinal(novoPedido.getValorTotal().subtract(novoPedido.getDesconto()));
+
+        BigDecimal valorTotal = valorLentes.add(valorArmacao);
+        novoPedido.setValorTotal(valorTotal);
+
+        BigDecimal valorFinal = valorTotal.subtract(desconto);
+        novoPedido.setValorFinal(valorFinal);
+
+
+        if (pedidoRequestDTO.itens() != null) {
+            for (ItemPedidoRequestDTO itemDTO : pedidoRequestDTO.itens()) {
+                Produto produto = produtoRepository.findById(itemDTO.produtoId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com o id: " + itemDTO.produtoId()));
+
+                ItemPedido itemPedido = new ItemPedido();
+                itemPedido.setProduto(produto);
+                itemPedido.setQuantidade(itemDTO.quantidade());
+                itemPedido.setPedido(novoPedido);
+
+                if ("LENTE".equals(produto.getTipoProduto())) {
+                    itemPedido.setPrecoUnitario(valorLentes);
+                } else if ("ARMACAO".equals(produto.getTipoProduto())) {
+                    itemPedido.setPrecoUnitario(valorArmacao);
+                } else {
+                    itemPedido.setPrecoUnitario(produto.getValorVenda());
+                }
+
+                novoPedido.getItens().add(itemPedido);
+            }
+        }
 
         if (pedidoRequestDTO.pagamentos() != null && !pedidoRequestDTO.pagamentos().isEmpty()) {
             for (PagamentoRequestDTO pagDto : pedidoRequestDTO.pagamentos()) {
@@ -93,14 +111,13 @@ public class PedidoService {
                 novoPagamento.setNumeroParcelas(pagDto.numeroParcelas() != null ? pagDto.numeroParcelas() : 1);
 
                 novoPagamento.setPedido(novoPedido);
-
                 novoPedido.getPagamentos().add(novoPagamento);
             }
         }
+
         novoPedido.setStatus(PedidoStatus.SOLICITADO);
 
         Pedido pedidoSalvo = pedidoRepository.save(novoPedido);
-
         return pedidoMapper.toResponseDTO(pedidoSalvo);
     }
 
