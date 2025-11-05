@@ -47,9 +47,12 @@ public class PedidoMapper {
 
         String nomeMarca = (marca != null) ? marca.getNome() : null;
 
+        Produto produto = item.getProduto();
+
         return new ItemPedidoResponseDTO(
                 item.getProduto().getNome(),
                 nomeMarca,
+                produto != null ? produto.getTipoProduto() : null,
                 item.getQuantidade(),
                 item.getPrecoUnitario(),
                 subtotal
