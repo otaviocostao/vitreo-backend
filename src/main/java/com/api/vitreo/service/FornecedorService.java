@@ -44,8 +44,13 @@ public class FornecedorService {
         return fornecedorMapper.toResponseDTO(fornecedorEntity);
     }
 
-    public void deleteById(UUID id) {
-        fornecedorRepository.deleteById(id);
+    @Transactional
+    public void delete(UUID id) {
+        Fornecedor fornecedor = fornecedorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Fornecedor não encontrado com o id: " + id));
+
+
+        fornecedorRepository.delete(fornecedor);
     }
 
     @Transactional

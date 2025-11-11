@@ -49,8 +49,9 @@ public class FornecedorController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable("id") UUID id) {
-        fornecedorService.deleteById(id);
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        fornecedorService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
