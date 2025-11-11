@@ -10,12 +10,18 @@ import java.util.List;
 
 public class ProdutoSpecification {
 
-    public static Specification<Produto> comFiltros(String nome, TipoProduto tipo) {
-        return (root, query, criteriaBuilder) -> {
+    public static Specification<Produto> comFiltros(String query, TipoProduto tipo) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (nome != null && !nome.isEmpty()) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("nome")), "%" + nome.toLowerCase() + "%"));
+            if (query != null && !query.trim().isEmpty()) {
+                String searchTerm = "%" + query.toLowerCase().trim() + "%";
+
+                Predicate nomePredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("nome")), searchTerm);
+
+                Predicate referenciaPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("referencia")), searchTerm);
+
+                predicates.add(criteriaBuilder.or(nomePredicate, referenciaPredicate));
             }
 
             if (tipo != null) {

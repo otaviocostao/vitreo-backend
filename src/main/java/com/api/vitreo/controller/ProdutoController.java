@@ -43,12 +43,12 @@ public class ProdutoController {
     @GetMapping
     public ResponseEntity<Page<ProdutoResponseDTO>> findAll(
 
-            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String query,
             @RequestParam(required = false) TipoProduto tipo,
     
             Pageable pageable) {
 
-        Page<ProdutoResponseDTO> produtos = produtoService.findAll(nome, tipo, pageable);
+        Page<ProdutoResponseDTO> produtos = produtoService.findAll(query, tipo, pageable);
         return ResponseEntity.ok(produtos);
     }
 

@@ -83,8 +83,8 @@ public class ProdutoService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProdutoResponseDTO> findAll(String nome, TipoProduto tipo, Pageable pageable){
-        Specification<Produto> spec = ProdutoSpecification.comFiltros(nome, tipo);
+    public Page<ProdutoResponseDTO> findAll(String query, TipoProduto tipo, Pageable pageable){
+        Specification<Produto> spec = ProdutoSpecification.comFiltros(query, tipo);
         Page<Produto> produtosPage = produtoRepository.findAll(spec, pageable);
 
         return produtosPage.map(produtoMapper::toResponseDTO);
