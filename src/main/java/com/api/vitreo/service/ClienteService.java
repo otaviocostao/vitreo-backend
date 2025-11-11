@@ -61,12 +61,12 @@ public class ClienteService {
         return clienteRepository.existsById(id);
     }
 
-    public void delete(Cliente cliente) {
-        clienteRepository.delete(cliente);
-    }
+    @Transactional
+    public void delete(UUID id) {
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o ID: " + id));
 
-    public void deleteById(UUID id) {
-        clienteRepository.deleteById(id);
+        clienteRepository.delete(cliente);
     }
 
     @Transactional

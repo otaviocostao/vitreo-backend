@@ -50,9 +50,10 @@ public class ClienteController {
         return ResponseEntity.ok(cliente);
     }
 
-    @DeleteMapping
-    public void deleteById(@PathVariable("id") UUID id){
-        clienteService.deleteById(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id){
+        clienteService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
