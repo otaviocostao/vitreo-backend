@@ -94,8 +94,8 @@ public class ProdutoService {
     public void delete(UUID id) {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com o id: " + id));
-        produto.setAtivo(false);
-        produtoRepository.save(produto);
+
+        produtoRepository.delete(produto);
     }
 
     @Transactional
