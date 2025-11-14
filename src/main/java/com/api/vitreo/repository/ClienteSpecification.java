@@ -9,16 +9,18 @@ import java.util.List;
 
 public class ClienteSpecification {
 
-    public static Specification<Cliente> comFiltros(String nome, String cpf) {
-        return (root, query, criteriaBuilder) -> {
+    public static Specification<Cliente> comFiltros(String query) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (nome != null && !nome.isEmpty()) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("nomeCompleto")), "%" + nome.toLowerCase() + "%"));
-            }
+            if (query != null && !query.trim().isEmpty()) {
+                String searchTerm = "%" + query.toLowerCase().trim() + "%";
 
-            if (cpf != null) {
-                predicates.add(criteriaBuilder.equal(root.get("cpf"), cpf));
+                Predicate nomePredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("nome")), searchTerm);
+
+                Predicate cpfPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("cpf")), searchTerm);
+
+                predicates.add(criteriaBuilder.or(nomePredicate, cpfPredicate));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

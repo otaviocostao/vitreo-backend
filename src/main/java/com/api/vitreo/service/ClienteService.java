@@ -49,9 +49,9 @@ public class ClienteService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ClienteResponseDTO> findAll(String nome, String cpf, Pageable pageable) {
+    public Page<ClienteResponseDTO> findAll(String query, Pageable pageable) {
 
-        Specification<Cliente> spec = ClienteSpecification.comFiltros(nome, cpf);
+        Specification<Cliente> spec = ClienteSpecification.comFiltros(query);
         Page<Cliente> clientesPage = clienteRepository.findAll(spec, pageable);
 
         return clientesPage.map(clienteMapper::toResponseDTO);
