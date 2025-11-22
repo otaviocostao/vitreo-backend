@@ -8,10 +8,12 @@ import com.api.vitreo.entity.Marca;
 import com.api.vitreo.exception.BusinessException;
 import com.api.vitreo.exception.ResourceNotFoundException;
 import com.api.vitreo.repository.FornecedorRepository;
+import com.api.vitreo.repository.FornecedorSpecification;
 import com.api.vitreo.repository.MarcaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,8 +56,9 @@ public class FornecedorService {
     }
 
     @Transactional
-    public Page<FornecedorResponseDTO> findAll(Pageable pageable) {
-        Page<Fornecedor> fornecedoresPage = fornecedorRepository.findAll(pageable);
+    public Page<FornecedorResponseDTO> findAll(String query, Pageable pageable) {
+        Specification<Fornecedor> spec = FornecedorSpecification.comFiltros(query);
+        Page<Fornecedor> fornecedoresPage = fornecedorRepository.findAll(spec, pageable);
         return fornecedoresPage.map(fornecedorMapper::toResponseDTO);
     }
 

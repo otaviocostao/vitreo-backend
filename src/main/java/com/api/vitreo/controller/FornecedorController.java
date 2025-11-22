@@ -40,11 +40,13 @@ public class FornecedorController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<FornecedorResponseDTO>> findAll(@PageableDefault(
+    public ResponseEntity<Page<FornecedorResponseDTO>> findAll(
+            @RequestParam(required = false) String query,
+            @PageableDefault(
             size = 10,
             page = 0
     )Pageable pageable) {
-        Page<FornecedorResponseDTO> fornecedores = fornecedorService.findAll(pageable);
+        Page<FornecedorResponseDTO> fornecedores = fornecedorService.findAll(query, pageable);
         return ResponseEntity.ok(fornecedores);
     }
 
