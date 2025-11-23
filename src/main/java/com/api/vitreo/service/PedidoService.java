@@ -11,13 +11,11 @@ import com.api.vitreo.entity.*;
 import com.api.vitreo.enums.PedidoStatus;
 import com.api.vitreo.exception.BusinessException;
 import com.api.vitreo.exception.ResourceNotFoundException;
-import com.api.vitreo.repository.ClienteRepository;
-import com.api.vitreo.repository.PedidoRepository;
-import com.api.vitreo.repository.ProdutoRepository;
-import com.api.vitreo.repository.ReceituarioRepository;
+import com.api.vitreo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -130,8 +128,9 @@ public class PedidoService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PedidoResponseDTO> findAll(Pageable pageable) {
-        Page<Pedido> pedidosEntity = pedidoRepository.findAll(pageable);
+    public Page<PedidoResponseDTO> findAll(String query, Pageable pageable) {
+        Specification<Pedido> spec = PedidoSpecification.comFiltros(query);
+        Page<Pedido> pedidosEntity = pedidoRepository.findAll(spec, pageable);
 
         Page<PedidoResponseDTO> pedidosDto = pedidosEntity.map(pedido -> pedidoMapper.toResponseDTO(pedido));
 

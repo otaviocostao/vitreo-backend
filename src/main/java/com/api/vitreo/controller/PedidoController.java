@@ -50,12 +50,12 @@ public class PedidoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<PedidoResponseDTO>> findAll(@PageableDefault(
-                                                                size = 10,
-                                                                page = 0,
-                                                                sort = "dataPedido",
-                                                                direction = Sort.Direction.DESC)Pageable pageable){
-        Page<PedidoResponseDTO> pedidos = pedidoService.findAll(pageable);
+    public ResponseEntity<Page<PedidoResponseDTO>> findAll(
+            @RequestParam(required = false) String query,
+            @PageableDefault(
+                size = 10, page = 0,
+                sort = "dataPedido", direction = Sort.Direction.DESC)Pageable pageable){
+        Page<PedidoResponseDTO> pedidos = pedidoService.findAll(query, pageable);
         return ResponseEntity.ok(pedidos);
     }
 
