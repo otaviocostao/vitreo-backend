@@ -207,10 +207,20 @@ public class PedidoService {
             valorTotal = valorTotal.add(itemPedido.getPrecoUnitario().multiply(new BigDecimal(itemDto.quantidade())));
         }
 
+        if (dto.receituario() != null) {
+            Receituario novoReceituario = receituarioMapper.toEntity(dto.receituario());
+            novoReceituario.setCliente(pedido.getCliente());
+            pedido.setReceituario(novoReceituario);
+        }
+
+        Receituario novoReceituario = receituarioMapper.toEntity(dto.receituario());
+        pedido.setReceituario(novoReceituario);
         pedido.setValorTotal(valorTotal);
         pedido.setDesconto(dto.desconto() != null ? dto.desconto() : BigDecimal.ZERO);
         pedido.setValorFinal(pedido.getValorTotal().subtract(pedido.getDesconto()));
+        pedido.setDataPedido(dto.dataPedido());
         pedido.setDataPrevisaoEntrega(dto.dataPrevisaoEntrega());
+        pedido.setDataEntrega(dto.dataEntrega());
 
         Pedido pedidoSalvo = pedidoRepository.save(pedido);
         return pedidoMapper.toResponseDTO(pedidoSalvo);
