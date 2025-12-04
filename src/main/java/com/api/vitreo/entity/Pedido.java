@@ -68,8 +68,4 @@ public class Pedido {
     @Column(nullable = false)
     private PedidoStatus status;
 
-    @PrePersist
-    public void onPersist() {
-        this.dataPedido = LocalDateTime.now();
-    }
 }
