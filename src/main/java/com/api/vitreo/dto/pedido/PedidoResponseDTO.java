@@ -1,6 +1,8 @@
 package com.api.vitreo.dto.pedido;
 
 import com.api.vitreo.dto.cliente.ClienteSimplificadoDTO;
+import com.api.vitreo.dto.pagamento.PagamentoResponseDTO;
+import com.api.vitreo.dto.receituario.ReceituarioResponseDTO;
 import com.api.vitreo.enums.PedidoStatus;
 
 import java.math.BigDecimal;
@@ -12,6 +14,7 @@ import java.util.UUID;
 public record PedidoResponseDTO(
         UUID id,
         Integer ordemServico,
+        ReceituarioResponseDTO receituario,
         PedidoStatus status,
         LocalDateTime dataPedido,
         LocalDate dataPrevisaoEntrega,
@@ -22,5 +25,6 @@ public record PedidoResponseDTO(
         BigDecimal desconto,
         BigDecimal valorFinal,
         ClienteSimplificadoDTO cliente,
-        List<ItemPedidoResponseDTO> itens
+        List<ItemPedidoResponseDTO> itens,
+        List<PagamentoResponseDTO> pagamentos
 ) {}
