@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -212,6 +213,22 @@ public class PedidoService {
                 pedido.getItens().add(itemPedido);
 
                 valorTotalCalculado = valorTotalCalculado.add(itemPedido.getPrecoUnitario().multiply(new BigDecimal(itemDto.quantidade())));
+            }
+        }
+
+        pedido.getPagamentos().clear();
+        if(dto.pagamentos() != null) {
+
+            for (PagamentoRequestDTO pagDto : dto.pagamentos()) {
+                Pagamento pagamento = new Pagamento();
+                pagamento.setFormaPagamento(pagDto.formaPagamento());
+                pagamento.setValorPago(pagDto.valorPago());
+                pagamento.setNumeroParcelas(pagDto.numeroParcelas() != null ? pagDto.numeroParcelas() : 1);
+                pagamento.setDataPagamento(LocalDateTime.now());
+
+                pagamento.setPedido(pedido);
+
+                pedido.getPagamentos().add(pagamento);
             }
         }
 

@@ -1,5 +1,6 @@
 package com.api.vitreo.dto.pedido;
 
+import com.api.vitreo.dto.pagamento.PagamentoRequestDTO;
 import com.api.vitreo.dto.receituario.ReceituarioRequestDTO;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -28,6 +29,8 @@ public record PedidoUpdateRequestDTO(
         BigDecimal valorLentes,
         BigDecimal desconto,
         BigDecimal valorTotal,
-        BigDecimal valorFinal
+        BigDecimal valorFinal,
+
+        List<PagamentoRequestDTO> pagamentos
 ) {
 }
