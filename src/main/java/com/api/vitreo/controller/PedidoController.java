@@ -4,6 +4,7 @@ import com.api.vitreo.dto.pagamento.PagamentoAninhadoRequestDTO;
 import com.api.vitreo.dto.pagamento.PagamentoResponseDTO;
 import com.api.vitreo.dto.pedido.PedidoRequestDTO;
 import com.api.vitreo.dto.pedido.PedidoResponseDTO;
+import com.api.vitreo.dto.pedido.PedidoUpdateRequestDTO;
 import com.api.vitreo.enums.PedidoStatus;
 import com.api.vitreo.service.PagamentoService;
 import com.api.vitreo.service.PedidoService;
@@ -131,5 +132,11 @@ public class PedidoController {
 
         Page<PagamentoResponseDTO> pagamentos = pagamentoService.findAllByPedidoId(pedidoId, pageable);
         return ResponseEntity.ok(pagamentos);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PedidoResponseDTO> update(@PathVariable UUID id, @Valid @RequestBody PedidoUpdateRequestDTO pedidoUpdateRequestDTO){
+        PedidoResponseDTO pedidoAtualizado = pedidoService.update(id, pedidoUpdateRequestDTO);
+        return ResponseEntity.ok(pedidoAtualizado);
     }
 }
