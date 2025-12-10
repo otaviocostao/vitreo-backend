@@ -196,26 +196,41 @@ public class PedidoService {
         }
 
         pedido.getItens().clear();
-        BigDecimal valorTotal = BigDecimal.ZERO;
+        BigDecimal valorTotalCalculado = BigDecimal.ZERO;
 
-        for (ItemPedidoRequestDTO itemDto : dto.itens()) {
-            Produto produto = produtoRepository.findById(itemDto.produtoId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
+        if (dto.itens() != null) {
+            for (ItemPedidoRequestDTO itemDto : dto.itens()) {
+                Produto produto = produtoRepository.findById(itemDto.produtoId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com id: " + itemDto.produtoId()));
 
-            ItemPedido itemPedido = new ItemPedido();
-            pedido.getItens().add(itemPedido);
-            valorTotal = valorTotal.add(itemPedido.getPrecoUnitario().multiply(new BigDecimal(itemDto.quantidade())));
+                ItemPedido itemPedido = new ItemPedido();
+                itemPedido.setPedido(pedido);
+                itemPedido.setProduto(produto);
+                itemPedido.setQuantidade(itemDto.quantidade());
+                itemPedido.setPrecoUnitario(produto.getValorVenda());
+
+                pedido.getItens().add(itemPedido);
+
+                valorTotalCalculado = valorTotalCalculado.add(itemPedido.getPrecoUnitario().multiply(new BigDecimal(itemDto.quantidade())));
+            }
         }
 
         if (dto.receituario() != null) {
-            Receituario novoReceituario = receituarioMapper.toEntity(dto.receituario());
-            novoReceituario.setCliente(pedido.getCliente());
-            pedido.setReceituario(novoReceituario);
+            Receituario receituario = pedido.getReceituario();
+            if (receituario == null) {
+                receituario = new Receituario();
+                receituario.setCliente(pedido.getCliente());
+                pedido.setReceituario(receituario);
+            }
+            receituarioMapper.updateFromDto(dto.receituario(), receituario);
+        } else {
+            pedido.setReceituario(null);
         }
 
-        Receituario novoReceituario = receituarioMapper.toEntity(dto.receituario());
-        pedido.setReceituario(novoReceituario);
-        pedido.setValorTotal(valorTotal);
+        pedido.setValorLentes(dto.valorLentes());
+        pedido.setValorArmacao(dto.valorArmacao());
+        pedido.setOrdemServico(dto.ordemServico());
+        pedido.setValorTotal(valorTotalCalculado);
         pedido.setDesconto(dto.desconto() != null ? dto.desconto() : BigDecimal.ZERO);
         pedido.setValorFinal(pedido.getValorTotal().subtract(pedido.getDesconto()));
         pedido.setDataPedido(dto.dataPedido());
