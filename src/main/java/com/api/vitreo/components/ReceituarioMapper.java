@@ -80,4 +80,29 @@ public class ReceituarioMapper {
         entity.setCrmMedico(dto.crmMedico());
         entity.setDataReceita(dto.dataReceita());
     }
+
+    public void updateFromDto(ReceituarioRequestDTO dto, Receituario receituario) {
+        if (dto == null || receituario == null) {
+            return;
+        }
+
+        receituario.setEsfericoOd(dto.esfericoOd());
+        receituario.setCilindricoOd(dto.cilindricoOd());
+        receituario.setEixoOd(dto.eixoOd());
+        receituario.setEsfericoOe(dto.esfericoOe());
+        receituario.setCilindricoOe(dto.cilindricoOe());
+        receituario.setEixoOe(dto.eixoOe());
+        receituario.setAdicao(dto.adicao());
+        receituario.setDistanciaPupilar(dto.distanciaPupilar());
+        receituario.setDnpOd(dto.dnpOd());
+        receituario.setDnpOe(dto.dnpOe());
+        receituario.setCentroOpticoOd(dto.centroOpticoOd());
+        receituario.setCentroOpticoOe(dto.centroOpticoOe());
+        receituario.setAnguloMaior(dto.anguloMaior());
+        receituario.setPonteAro(dto.ponteAro());
+        receituario.setAnguloVertical(dto.anguloVertical());
+        receituario.setNomeMedico(dto.nomeMedico());
+        receituario.setCrmMedico(dto.crmMedico());
+        receituario.setDataReceita(dto.dataReceita());
+    }
 }
