@@ -57,15 +57,17 @@ public class DashboardService {
 
         List<Object[]> resultadosRaw = pedidoRepository.findReceitaPorDiaAsObjectArray(inicioAtual, fimAtual);
 
-        if (!resultadosRaw.isEmpty()) {
-            Object[] primeiroResultado = resultadosRaw.get(0);
-            System.out.println("--- DEBUG DOS TIPOS DA QUERY ---");
-            System.out.println("Tipo do primeiro elemento (Data): " + primeiroResultado[0].getClass().getName());
-            System.out.println("Tipo do segundo elemento (Soma): " + primeiroResultado[1].getClass().getName());
-            System.out.println("---------------------------------");
-        }
+        List<GraficoReceitaDTO> dadosGrafico = resultadosRaw.stream()
+                .map(resultado -> {
+                    java.sql.Date dataSql = (java.sql.Date) resultado[0];
+                    LocalDate data = dataSql.toLocalDate();
 
-        List<GraficoReceitaDTO> dadosGrafico = new ArrayList<>();
+                    BigDecimal valor = (BigDecimal) resultado[1];
+
+                    return new GraficoReceitaDTO(data, valor);
+                })
+                .collect(Collectors.toList());
+
 
         List<VendaRecenteDTO> ultimasVendas = pedidoRepository.findTop4ByOrderByDataPedidoDesc().stream()
                 .map(this::toVendaRecenteDTO)

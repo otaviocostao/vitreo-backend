@@ -1,17 +1,19 @@
 package com.api.vitreo.dto.dashboard;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.sql.Date;
 
 public class GraficoReceitaRawDTO {
 
     private LocalDate data;
-    private Double valor;
+    private BigDecimal valor;
 
     public GraficoReceitaRawDTO() {
     }
 
-    public GraficoReceitaRawDTO(LocalDate data, Double valor) {
-        this.data = data;
+    public GraficoReceitaRawDTO(Date data, BigDecimal valor) {
+        this.data = new java.sql.Date(data.getTime()).toLocalDate();
         this.valor = valor;
     }
 
@@ -19,7 +21,7 @@ public class GraficoReceitaRawDTO {
         return data;
     }
 
-    public Double getValor() {
+    public BigDecimal getValor() {
         return valor;
     }
 
@@ -27,7 +29,7 @@ public class GraficoReceitaRawDTO {
         this.data = data;
     }
 
-    public void setValor(Double valor) {
+    public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
 }

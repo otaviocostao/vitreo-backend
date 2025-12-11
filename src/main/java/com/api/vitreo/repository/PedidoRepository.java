@@ -1,5 +1,6 @@
 package com.api.vitreo.repository;
 
+import com.api.vitreo.dto.dashboard.GraficoReceitaRawDTO;
 import com.api.vitreo.entity.Pedido;
 import com.api.vitreo.enums.PedidoStatus;
 import org.springframework.data.domain.Page;
