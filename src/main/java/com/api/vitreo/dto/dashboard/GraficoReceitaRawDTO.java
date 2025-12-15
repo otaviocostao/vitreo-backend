@@ -9,9 +9,6 @@ public class GraficoReceitaRawDTO {
     private LocalDate data;
     private BigDecimal valor;
 
-    public GraficoReceitaRawDTO() {
-    }
-
     public GraficoReceitaRawDTO(Date data, BigDecimal valor) {
         this.data = new java.sql.Date(data.getTime()).toLocalDate();
         this.valor = valor;
