@@ -253,6 +253,7 @@ public class PedidoService {
         pedido.setDataPedido(dto.dataPedido());
         pedido.setDataPrevisaoEntrega(dto.dataPrevisaoEntrega());
         pedido.setDataEntrega(dto.dataEntrega());
+        pedido.setStatus(dto.status());
 
         Pedido pedidoSalvo = pedidoRepository.save(pedido);
         return pedidoMapper.toResponseDTO(pedidoSalvo);
