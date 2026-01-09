@@ -1,0 +1,5 @@
+
+BEGIN;
+ALTER TABLE pedidos ADD COLUMN observacoes VARCHAR(1000);
+
+COMMIT;

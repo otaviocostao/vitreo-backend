@@ -34,6 +34,8 @@ public record PedidoUpdateRequestDTO(
 
         List<PagamentoRequestDTO> pagamentos,
 
-        PedidoStatus status
+        PedidoStatus status,
+
+        String observacoes
 ) {
 }

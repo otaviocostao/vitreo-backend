@@ -26,5 +26,6 @@ public record PedidoResponseDTO(
         BigDecimal valorFinal,
         ClienteSimplificadoDTO cliente,
         List<ItemPedidoResponseDTO> itens,
-        List<PagamentoResponseDTO> pagamentos
+        List<PagamentoResponseDTO> pagamentos,
+        String observacoes
 ) {}

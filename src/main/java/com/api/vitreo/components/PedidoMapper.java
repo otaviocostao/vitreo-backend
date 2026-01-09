@@ -78,7 +78,8 @@ public class PedidoMapper {
                 pedido.getValorFinal(),
                 clienteSimplificadoDTO,
                 itensDTO,
-                pagamentos
+                pagamentos,
+                pedido.getObservacoes()
         );
     }
 

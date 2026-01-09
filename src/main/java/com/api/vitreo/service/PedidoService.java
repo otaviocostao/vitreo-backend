@@ -115,6 +115,7 @@ public class PedidoService {
         }
 
         novoPedido.setStatus(PedidoStatus.SOLICITADO);
+        novoPedido.setObservacoes(pedidoRequestDTO.observacoes());
 
         Pedido pedidoSalvo = pedidoRepository.save(novoPedido);
         return pedidoMapper.toResponseDTO(pedidoSalvo);
@@ -254,6 +255,7 @@ public class PedidoService {
         pedido.setDataPrevisaoEntrega(dto.dataPrevisaoEntrega());
         pedido.setDataEntrega(dto.dataEntrega());
         pedido.setStatus(dto.status());
+        pedido.setObservacoes(dto.observacoes());
 
         Pedido pedidoSalvo = pedidoRepository.save(pedido);
         return pedidoMapper.toResponseDTO(pedidoSalvo);

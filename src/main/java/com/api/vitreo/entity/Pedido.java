@@ -68,4 +68,5 @@ public class Pedido {
     @Column(nullable = false)
     private PedidoStatus status;
 
+    private String observacoes;
 }

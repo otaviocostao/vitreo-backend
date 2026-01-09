@@ -27,6 +27,8 @@ public record PedidoRequestDTO(
         BigDecimal desconto,
         BigDecimal valorFinal,
 
-        List<PagamentoRequestDTO> pagamentos
+        List<PagamentoRequestDTO> pagamentos,
+
+        String observacoes
 
 ) {}
