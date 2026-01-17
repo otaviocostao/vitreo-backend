@@ -2,12 +2,14 @@ package com.api.vitreo.exception;
 
 import com.api.vitreo.dto.ApiErrorDTO;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.Instant;
+import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -37,5 +39,24 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(status).body(error);
     }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+
+        Throwable rootCause = ex.getRootCause();
+        String message = "Erro de integridade de dados. Verifique os valores enviados.";
+
+        if (rootCause != null && rootCause.getMessage() != null) {
+            String rootCauseMessage = rootCause.getMessage().toLowerCase();
+
+            if (rootCauseMessage.contains("pedidos_ordem_servico_key") || rootCauseMessage.contains("duplicate key") && rootCauseMessage.contains("ordem_servico")) {
+                message = "Esta Ordem de Serviço já foi utilizada anteriormente.";
+            }
+        }
+
+        Map<String, String> errorResponse = Map.of("error", message);
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
 
 }
